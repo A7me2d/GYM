@@ -14,7 +14,8 @@ const createExercise = (
   instructions: string[],
   commonMistakes: string[],
   safetyTips: string[],
-  alternatives: string[]
+  alternatives: string[],
+  imageUrl?: string
 ): Exercise => ({
   id,
   name,
@@ -25,7 +26,7 @@ const createExercise = (
   secondaryMuscle,
   difficulty,
   equipment,
-  imageUrl: `https://images.unsplash.com/photo-1571019614242-c5c8d8d8d8d8?w=400&h=300&fit=crop&query=${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`,
+  imageUrl: imageUrl || `https://images.unsplash.com/photo-1571019614242-c5c8d8d8d8d8?w=400&h=300&fit=crop&query=${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`,
   description,
   instructions,
   commonMistakes,
@@ -70,7 +71,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Keep your shoulders retracted and depressed',
           'Use collars to secure weights on the bar'
         ],
-        ['Dumbbell Bench Press', 'Incline Bench Press', 'Machine Chest Press']
+        ['Dumbbell Bench Press', 'Incline Bench Press', 'Machine Chest Press'],
+        '/assets/day1/Barbell Bench Press.png'
       ),
       createExercise(
         2,
@@ -102,7 +104,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Breathe out as you press up',
           'Lower dumbbells to the side of your upper chest'
         ],
-        ['Incline Barbell Press', 'Reverse Grip Bench Press', 'Cable Incline Fly']
+        ['Incline Barbell Press', 'Reverse Grip Bench Press', 'Cable Incline Fly'],
+        '/assets/day1/Incline Dumbbell Press.png'
       ),
       createExercise(
         3,
@@ -134,7 +137,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Maintain a controlled tempo throughout',
           'Adjust weight to achieve full range of motion'
         ],
-        ['Dumbbell Fly', 'Cable Crossover', 'Pec Deck']
+        ['Dumbbell Fly', 'Cable Crossover', 'Pec Deck'],
+        '/assets/day1/Chest Fly Machine.png'
       ),
       createExercise(
         4,
@@ -166,7 +170,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the descent - dont drop quickly',
           'Stop if you feel shoulder pain'
         ],
-        ['Bench Dips', 'Assisted Dip Machine', 'Close Grip Bench Press']
+        ['Bench Dips', 'Assisted Dip Machine', 'Close Grip Bench Press'],
+        '/assets/day1/Weighted Dips.png'
       ),
       createExercise(
         5,
@@ -198,7 +203,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Squeeze triceps hard at the bottom',
           'Control the weight on the way up'
         ],
-        ['Straight Bar Pushdown', 'V-Bar Pushdown', 'Reverse Grip Pushdown']
+        ['Straight Bar Pushdown', 'V-Bar Pushdown', 'Reverse Grip Pushdown'],
+        '/assets/day1/Rope Pushdown.png'
       ),
       createExercise(
         6,
@@ -230,7 +236,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Focus on the triceps stretch and contraction',
           'Avoid locking out at the top'
         ],
-        ['Skull Crushers', 'Cable Overhead Extension', 'EZ Bar Extension']
+        ['Skull Crushers', 'Cable Overhead Extension', 'EZ Bar Extension'],
+        '/assets/day1/Overhead Dumbbell Triceps Extension.png'
       )
     ]
   },
@@ -270,7 +277,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Start light and progress gradually',
           'Consider using a belt for heavy attempts'
         ],
-        ['Romanian Deadlift', 'Trap Bar Deadlift', 'Rack Pulls']
+        ['Romanian Deadlift', 'Trap Bar Deadlift', 'Rack Pulls'],
+        '/assets/day2/Deadlift.png'
       ),
       createExercise(
         8,
@@ -302,7 +310,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Focus on pulling with your back, not arms',
           'Control the eccentric phase'
         ],
-        ['Dumbbell Row', 'T-Bar Row', 'Seated Cable Row']
+        ['Dumbbell Row', 'T-Bar Row', 'Seated Cable Row'],
+        '/assets/day2/Barbell Row.png'
       ),
       createExercise(
         9,
@@ -334,7 +343,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the weight on the way up',
           'Maintain a slight lean back'
         ],
-        ['Wide Grip Lat Pulldown', 'Reverse Grip Pulldown', 'Chin-ups']
+        ['Wide Grip Lat Pulldown', 'Reverse Grip Pulldown', 'Chin-ups'],
+        '/assets/day2/Lat Pulldown.png'
       ),
       createExercise(
         10,
@@ -367,7 +377,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Keep shoulders down and back',
           'Control the eccentric phase'
         ],
-        ['Barbell Row', 'T-Bar Row', 'Machine Row']
+        ['Barbell Row', 'T-Bar Row', 'Machine Row'],
+        '/assets/day2/Seated Cable Row.png'
       ),
       createExercise(
         11,
@@ -400,7 +411,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Maintain a controlled tempo',
           'Dont lean back to complete reps'
         ],
-        ['EZ Bar Curl', 'Dumbbell Curl', 'Cable Curl']
+        ['EZ Bar Curl', 'Dumbbell Curl', 'Cable Curl'],
+        '/assets/day2/Barbell Curl.png'
       ),
       createExercise(
         12,
@@ -432,7 +444,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the weight throughout',
           'Supinate your wrists as you curl'
         ],
-        ['Preacher Curl', 'Concentration Curl', 'Hammer Curl']
+        ['Preacher Curl', 'Concentration Curl', 'Hammer Curl'],
+        '/assets/day2/Incline Dumbbell Curl.png'
       )
     ]
   },
@@ -480,7 +493,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Push knees out in line with toes',
           'Start light and focus on mobility'
         ],
-        ['Front Squat', 'Goblet Squat', 'Leg Press']
+        ['Front Squat', 'Goblet Squat', 'Leg Press'],
+        '/assets/day4/Barbell Squat.png'
       ),
       createExercise(
         14,
@@ -512,7 +526,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Dont lock out at the top to maintain tension',
           'Adjust foot position for different emphasis'
         ],
-        ['Leg Press', 'Front Squat', 'Bulgarian Split Squat']
+        ['Leg Press', 'Front Squat', 'Bulgarian Split Squat'],
+        '/assets/day4/Hack Squat.png'
       ),
       createExercise(
         15,
@@ -544,7 +559,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Dont lock out your knees',
           'Adjust foot position for different muscle emphasis'
         ],
-        ['Hack Squat', 'Squat', 'Bulgarian Split Squat']
+        ['Hack Squat', 'Squat', 'Bulgarian Split Squat'],
+        '/assets/day4/Leg Press.png'
       ),
       createExercise(
         16,
@@ -577,7 +593,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the weight down slowly',
           'Adjust the pad so it sits just above your ankles'
         ],
-        ['Sissy Squat', 'Reverse Nordic Curl', 'Cable Leg Extension']
+        ['Sissy Squat', 'Reverse Nordic Curl', 'Cable Leg Extension'],
+        '/assets/day4/Leg Extension.png'
       ),
       createExercise(
         17,
@@ -610,7 +627,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Focus on the stretch and contraction',
           'Use full range of motion'
         ],
-        ['Seated Calf Raise', 'Donkey Calf Raise', 'Leg Press Calf Raise']
+        ['Seated Calf Raise', 'Donkey Calf Raise', 'Leg Press Calf Raise'],
+        '/assets/day4/Standing Calf Raise.png'
       )
     ]
   },
@@ -650,7 +668,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Dont lock out elbows at the top',
           'Start light to warm up your shoulders'
         ],
-        ['Barbell Overhead Press', 'Arnold Press', 'Machine Shoulder Press']
+        ['Barbell Overhead Press', 'Arnold Press', 'Machine Shoulder Press'],
+        '/assets/day5/Dumbbell Shoulder Press.png'
       ),
       createExercise(
         19,
@@ -682,7 +701,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the weight on the way down',
           'Slightly bend forward for better isolation'
         ],
-        ['Cable Lateral Raise', 'Machine Lateral Raise', 'Upright Row']
+        ['Cable Lateral Raise', 'Machine Lateral Raise', 'Upright Row'],
+        '/assets/day5/Lateral Raise.png'
       ),
       createExercise(
         20,
@@ -714,7 +734,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Keep your back flat',
           'Control the movement throughout'
         ],
-        ['Face Pull', 'Reverse Pec Deck', 'Cable Reverse Fly']
+        ['Face Pull', 'Reverse Pec Deck', 'Cable Reverse Fly'],
+        '/assets/day5/Rear Delt Fly.png'
       ),
       createExercise(
         21,
@@ -747,7 +768,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the weight throughout',
           'This is a control exercise, not a heavy one'
         ],
-        ['Rear Delt Fly', 'Reverse Pec Deck', 'Band Pull-Apart']
+        ['Rear Delt Fly', 'Reverse Pec Deck', 'Band Pull-Apart'],
+        '/assets/day5/Face Pull.png'
       ),
       createExercise(
         22,
@@ -779,7 +801,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the weight down',
           'Consider using straps for heavier weights'
         ],
-        ['Dumbbell Shrugs', 'Barbell Shrugs', 'Cable Shrugs']
+        ['Dumbbell Shrugs', 'Barbell Shrugs', 'Cable Shrugs'],
+        '/assets/day5/EZ Bar Shrugs.png'
       )
     ]
   },
@@ -819,7 +842,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Feel the stretch in your hamstrings',
           'Start light to master the form'
         ],
-        ['Stiff-Leg Deadlift', 'Good Morning', 'Cable Pull-Through']
+        ['Stiff-Leg Deadlift', 'Good Morning', 'Cable Pull-Through'],
+        '/assets/day6/Romanian Deadlift.png'
       ),
       createExercise(
         24,
@@ -851,7 +875,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Control the weight down',
           'Adjust the pad for proper positioning'
         ],
-        ['Seated Leg Curl', 'Nordic Curl', 'Stability Ball Curl']
+        ['Seated Leg Curl', 'Nordic Curl', 'Stability Ball Curl'],
+        '/assets/day6/Lying Leg Curl.png'
       ),
       createExercise(
         25,
@@ -883,7 +908,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Push through your front heel',
           'Start light to master the form'
         ],
-        ['Lunges', 'Step-Ups', 'Single-Leg Leg Press']
+        ['Lunges', 'Step-Ups', 'Single-Leg Leg Press'],
+        '/assets/day6/Bulgarian Split Squat.png'
       ),
       createExercise(
         26,
@@ -915,7 +941,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Drive through your heels',
           'Use a pad or mat to protect your hips'
         ],
-        ['Glute Bridge', 'Romanian Deadlift', 'Cable Pull-Through']
+        ['Glute Bridge', 'Romanian Deadlift', 'Cable Pull-Through'],
+        '/assets/day6/Hip Thrust.png'
       ),
       createExercise(
         27,
@@ -948,7 +975,8 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
           'Pause briefly at the top',
           'Focus on the squeeze'
         ],
-        ['Standing Calf Raise', 'Donkey Calf Raise', 'Tibialis Raise']
+        ['Standing Calf Raise', 'Donkey Calf Raise', 'Tibialis Raise'],
+        '/assets/day6/Seated Calf Raise.png'
       )
     ]
   },
