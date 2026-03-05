@@ -15,6 +15,7 @@ export class WorkoutService {
     totalSets: 0,
     totalReps: 0,
     personalRecords: {},
+    personalRecordsCount: 0,
     streak: 0,
     lastWorkoutDate: null
   });
@@ -154,6 +155,8 @@ export class WorkoutService {
         }
       }
     }
+    
+    stats.personalRecordsCount = Object.keys(stats.personalRecords).length;
     
     stats.totalSets += totalSets;
     stats.totalReps += totalReps;

@@ -57,6 +57,7 @@ export interface UserStats {
   totalSets: number;
   totalReps: number;
   personalRecords: { [exerciseName: string]: number };
+  personalRecordsCount: number;
   streak: number;
   lastWorkoutDate: string | null;
 }

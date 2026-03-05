@@ -97,7 +97,7 @@ import { TranslationService } from '../../core/services/translation.service';
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-value text-accent-400">{{ userStats().personalRecords }}</span>
+                <span class="stat-value text-accent-400">{{ userStats().personalRecordsCount }}</span>
                 <span class="stat-label">{{ t('dashboard.personalRecords') }}</span>
               </div>
             </div>

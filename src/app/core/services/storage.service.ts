@@ -53,6 +53,7 @@ export class StorageService {
       totalSets: 0,
       totalReps: 0,
       personalRecords: {},
+      personalRecordsCount: 0,
       streak: 0,
       lastWorkoutDate: null
     };
