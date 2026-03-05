@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, input, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WorkoutDay } from '../../../core/models/exercise.model';
 import { TranslationService } from '../../../core/services/translation.service';
@@ -10,18 +10,18 @@ import { TranslationService } from '../../../core/services/translation.service';
   template: `
     <div 
       class="card card-hover p-5 md:p-6 group relative overflow-hidden"
-      [class.glow]="isToday && !isCompleted"
-      [class.border-green-500/50]="isCompleted"
-      [class.border-primary-500/50]="isToday && !isCompleted"
-      [class.opacity-60]="day.isRestDay"
+      [class.glow]="isToday() && !isCompleted()"
+      [class.border-green-500/50]="isCompleted()"
+      [class.border-primary-500/50]="isToday() && !isCompleted()"
+      [class.opacity-60]="day().isRestDay"
     >
       <!-- Gradient overlay for completed days -->
-      @if (isCompleted) {
+      @if (isCompleted()) {
         <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/10 pointer-events-none"></div>
       }
       
       <!-- Today indicator pulse -->
-      @if (isToday && !isCompleted) {
+      @if (isToday() && !isCompleted()) {
         <div class="absolute top-3 right-3">
           <span class="relative flex h-3 w-3">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
@@ -36,17 +36,17 @@ import { TranslationService } from '../../../core/services/translation.service';
           <div class="flex items-center gap-3">
             <!-- Day icon -->
             <div class="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                 [class.bg-gradient-to-br]="!day.isRestDay"
-                 [class.from-primary-500/30]="!day.isRestDay && !isCompleted"
-                 [class.to-accent-500/20]="!day.isRestDay && !isCompleted"
-                 [class.from-green-500/30]="isCompleted"
-                 [class.to-emerald-500/20]="isCompleted"
-                 [class.bg-dark-700/50]="day.isRestDay">
-              @if (day.isRestDay) {
+                 [class.bg-gradient-to-br]="!day().isRestDay"
+                 [class.from-primary-500/30]="!day().isRestDay && !isCompleted()"
+                 [class.to-accent-500/20]="!day().isRestDay && !isCompleted()"
+                 [class.from-green-500/30]="isCompleted()"
+                 [class.to-emerald-500/20]="isCompleted()"
+                 [class.bg-dark-700/50]="day().isRestDay">
+              @if (day().isRestDay) {
                 <svg class="w-6 h-6 text-dark-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                 </svg>
-              } @else if (isCompleted) {
+              } @else if (isCompleted()) {
                 <svg class="w-6 h-6 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
@@ -59,13 +59,13 @@ import { TranslationService } from '../../../core/services/translation.service';
               }
             </div>
             <div>
-              <h3 class="text-lg font-bold text-white group-hover:text-primary-400 transition-colors">{{ day.name }}</h3>
-              <p class="text-sm text-dark-400">{{ day.focus }}</p>
+              <h3 class="text-lg font-bold text-white group-hover:text-primary-400 transition-colors">{{ day().name }}</h3>
+              <p class="text-sm text-dark-400">{{ day().focus }}</p>
             </div>
           </div>
         </div>
 
-        @if (!day.isRestDay) {
+        @if (!day().isRestDay) {
           <!-- Exercise count -->
           <div class="mb-4">
             <div class="flex items-center gap-2 text-sm text-dark-400">
@@ -74,13 +74,13 @@ import { TranslationService } from '../../../core/services/translation.service';
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
               </div>
-              <span class="font-medium">{{ day.exercises.length }} {{ t('dayCard.exercises') }}</span>
+              <span class="font-medium">{{ day().exercises.length }} {{ t('dayCard.exercises') }}</span>
             </div>
           </div>
 
           <!-- Muscle tags -->
           <div class="flex flex-wrap gap-2 mb-5">
-            @for (muscle of getUniqueMuscles(); track muscle) {
+            @for (muscle of uniqueMuscles(); track muscle) {
               <span class="px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-200 hover:scale-105"
                     [class]="getMuscleColor(muscle)">
                 {{ muscle }}
@@ -90,12 +90,12 @@ import { TranslationService } from '../../../core/services/translation.service';
 
           <!-- Action button -->
           <a 
-            [routerLink]="['/workout/day', day.id]" 
+            [routerLink]="['/workout/day', day().id]" 
             class="btn w-full justify-center text-sm font-bold"
-            [class.btn-success]="isCompleted"
-            [class.btn-primary]="!isCompleted"
+            [class.btn-success]="isCompleted()"
+            [class.btn-primary]="!isCompleted()"
           >
-            @if (isCompleted) {
+            @if (isCompleted()) {
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
               </svg>
@@ -126,24 +126,26 @@ import { TranslationService } from '../../../core/services/translation.service';
   `
 })
 export class DayCardComponent {
-  @Input() day!: WorkoutDay;
-  @Input() isCompleted = false;
-  @Input() isToday = false;
+  day = input.required<WorkoutDay>();
+  isCompleted = input(false);
+  isToday = input(false);
 
   private translationService = inject(TranslationService);
 
-  t(key: string): string {
-    return this.translationService.t(key);
-  }
-
-  getUniqueMuscles(): string[] {
-    if (this.day.isRestDay) return [];
+  // Computed unique muscles for better performance
+  uniqueMuscles = computed(() => {
+    const d = this.day();
+    if (d.isRestDay) return [];
     const muscles = new Set<string>();
-    this.day.exercises.forEach(ex => {
+    d.exercises.forEach(ex => {
       muscles.add(ex.primaryMuscle);
       ex.secondaryMuscle.forEach(m => muscles.add(m));
     });
     return Array.from(muscles).slice(0, 4);
+  });
+
+  t(key: string): string {
+    return this.translationService.t(key);
   }
 
   getMuscleColor(muscle: string): string {

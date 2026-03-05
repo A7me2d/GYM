@@ -20,7 +20,7 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
             [alt]="exercise()?.name"
             class="w-full h-full object-cover cursor-pointer"
             (error)="onImageError($event)"
-            (click)="showImagePreview = true"
+            (click)="showImagePreview.set(true)"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/70 to-transparent"></div>
           <div class="absolute inset-0">
@@ -281,7 +281,7 @@ export class ExerciseDetailsComponent implements OnInit {
   private translationService = inject(TranslationService);
 
   exercise = signal<Exercise | undefined>(undefined);
-  showImagePreview = false;
+  showImagePreview = signal(false);
 
   t(key: string): string {
     return this.translationService.t(key);

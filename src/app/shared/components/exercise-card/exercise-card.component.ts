@@ -1,4 +1,4 @@
-import { Component, Input, output, inject } from '@angular/core';
+import { Component, input, output, signal, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Exercise, ExerciseLog } from '../../../core/models/exercise.model';
@@ -12,10 +12,10 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
   template: `
     <div 
       class="card my-5 p-5 md:p-6 group relative overflow-hidden"
-      [class.border-green-500/50]="isCompleted"
-      [class.opacity-70]="isCompleted"
+      [class.border-green-500/50]="isCompleted()"
+      [class.opacity-70]="isCompleted()"
     >
-      @if (isCompleted) {
+      @if (isCompleted()) {
         <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/10 pointer-events-none"></div>
       }
       
@@ -23,11 +23,11 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
         <!-- Exercise Image -->
         <div 
           class="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-dark-700 flex-shrink-0 group-hover:scale-105 transition-transform duration-300 cursor-pointer"
-          (click)="showImagePreview = true"
+          (click)="showImagePreview.set(true)"
         >
           <img 
-            [src]="exercise.imageUrl" 
-            [alt]="exercise.name"
+            [src]="exercise().imageUrl" 
+            [alt]="exercise().name"
             class="w-full h-full object-cover"
             loading="lazy"
             (error)="onImageError($event)"
@@ -36,8 +36,8 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
 
         <!-- Image Viewer Modal -->
         <app-image-viewer
-          [imageUrl]="exercise.imageUrl"
-          [imageAlt]="exercise.name"
+          [imageUrl]="exercise().imageUrl"
+          [imageAlt]="exercise().name"
           [(isOpen)]="showImagePreview"
         />
 
@@ -45,15 +45,15 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
         <div class="flex-1 min-w-0">
           <div class="flex items-start justify-between gap-2 mb-3">
             <div>
-              <h4 class="text-lg font-bold text-white group-hover:text-primary-400 transition-colors truncate">{{ exercise.name }}</h4>
+              <h4 class="text-lg font-bold text-white group-hover:text-primary-400 transition-colors truncate">{{ exercise().name }}</h4>
               <div class="flex items-center gap-2 mt-1">
-                <span class="px-3 py-1 rounded-lg text-xs font-semibold" [class]="getMuscleColor(exercise.primaryMuscle)">
-                  {{ exercise.primaryMuscle }}
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold" [class]="getMuscleColor(exercise().primaryMuscle)">
+                  {{ exercise().primaryMuscle }}
                 </span>
-                <span class="badge badge-warning">{{ exercise.difficulty }}</span>
+                <span class="badge badge-warning">{{ exercise().difficulty }}</span>
               </div>
             </div>
-            @if (isCompleted) {
+            @if (isCompleted()) {
               <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"/>
@@ -65,31 +65,31 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
           <!-- Sets & Reps -->
           <div class="grid grid-cols-3 gap-3 mb-4">
             <div class="card p-3 text-center">
-              <div class="text-xl font-bold text-white">{{ exercise.sets }}</div>
+              <div class="text-xl font-bold text-white">{{ exercise().sets }}</div>
               <div class="text-xs text-dark-400 mt-1">{{ t('exerciseCard.sets') }}</div>
             </div>
             <div class="card p-3 text-center">
-              <div class="text-xl font-bold text-white">{{ exercise.reps }}</div>
+              <div class="text-xl font-bold text-white">{{ exercise().reps }}</div>
               <div class="text-xs text-dark-400 mt-1">{{ t('exerciseCard.reps') }}</div>
             </div>
             <div class="card p-3 text-center">
-              <div class="text-xl font-bold text-white">{{ exercise.rest }}</div>
+              <div class="text-xl font-bold text-white">{{ exercise().rest }}</div>
               <div class="text-xs text-dark-400 mt-1">{{ t('exerciseCard.rest') }}</div>
             </div>
           </div>
 
           <!-- Weight Inputs -->
-          @if (showInputs) {
+          @if (showInputs()) {
             <div class="mb-4">
               <label class="label mb-2">{{ t('exerciseCard.weightPerSet') }}</label>
-              <div class="grid gap-2" [style.grid-template-columns]="'repeat(' + exercise.sets + ', minmax(0, 1fr))'">
-                @for (set of weightInputs; track $index; let i = $index) {
+              <div class="grid gap-2" [style.grid-template-columns]="'repeat(' + exercise().sets + ', minmax(0, 1fr))'">
+                @for (set of weightInputs(); track $index; let i = $index) {
                   <input 
                     type="number" 
                     class="input text-center font-bold"
                     [placeholder]="t('exerciseCard.set') + ' ' + (i + 1)"
-                    [(ngModel)]="weightInputs[i]"
-                    (change)="onWeightChange()"
+                    [ngModel]="weightInputs()[i]"
+                    (ngModelChange)="updateWeight(i, $event)"
                     min="0"
                     step="0.5"
                   />
@@ -103,7 +103,7 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
                 <input 
                   type="checkbox" 
                   class="w-5 h-5 rounded border-dark-600 bg-dark-800 text-primary-500 focus:ring-primary-500"
-                  [checked]="isCompleted"
+                  [checked]="isCompleted()"
                   (change)="onCompleteToggle()"
                 />
                 <span class="text-sm font-medium text-dark-300">{{ t('exerciseCard.markCompleted') }}</span>
@@ -114,7 +114,7 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
           <!-- Actions -->
           <div class="flex items-center gap-3 mt-4">
             <a 
-              [routerLink]="['/exercise', exercise.id]"
+              [routerLink]="['/exercise', exercise().id]"
               class="btn btn-ghost text-sm flex-1"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -124,7 +124,7 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
               </svg>
               Details
             </a>
-            @if (showInputs && !isCompleted) {
+            @if (showInputs() && !isCompleted()) {
               <button 
                 class="btn btn-primary text-sm flex-1"
                 (click)="onCompleteToggle()"
@@ -142,16 +142,24 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
   `
 })
 export class ExerciseCardComponent {
-  @Input() exercise!: Exercise;
-  @Input() exerciseLog: ExerciseLog | null = null;
-  @Input() showInputs = false;
-  @Input() isCompleted = false;
+  exercise = input.required<Exercise>();
+  exerciseLog = input<ExerciseLog | null>(null);
+  showInputs = input(false);
+  isCompleted = input(false);
   
   weightChange = output<{ exerciseId: number; weights: number[] }>();
   completeChange = output<{ exerciseId: number; completed: boolean }>();
 
-  weightInputs: number[] = [];
-  showImagePreview = false;
+  showImagePreview = signal(false);
+  
+  // Computed weight inputs for better performance
+  weightInputs = computed(() => {
+    const log = this.exerciseLog();
+    if (log) {
+      return [...log.weights];
+    }
+    return new Array(this.exercise().sets).fill(0);
+  });
 
   private translationService = inject(TranslationService);
 
@@ -159,30 +167,31 @@ export class ExerciseCardComponent {
     return this.translationService.t(key);
   }
 
-  ngOnInit(): void {
-    if (this.exerciseLog) {
-      this.weightInputs = [...this.exerciseLog.weights];
-    } else {
-      this.weightInputs = new Array(this.exercise.sets).fill(0);
-    }
-  }
-
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.src = 'https://images.unsplash.com/photo-1534438327276-14e5300c0468?w=400&h=300&fit=crop';
   }
 
+  updateWeight(index: number, value: number): void {
+    const weights = [...this.weightInputs()];
+    weights[index] = value;
+    this.weightChange.emit({
+      exerciseId: this.exercise().id,
+      weights
+    });
+  }
+
   onWeightChange(): void {
     this.weightChange.emit({
-      exerciseId: this.exercise.id,
-      weights: this.weightInputs
+      exerciseId: this.exercise().id,
+      weights: this.weightInputs()
     });
   }
 
   onCompleteToggle(): void {
     this.completeChange.emit({
-      exerciseId: this.exercise.id,
-      completed: !this.isCompleted
+      exerciseId: this.exercise().id,
+      completed: !this.isCompleted()
     });
   }
 

@@ -19,7 +19,7 @@ import { TranslationService } from '../../core/services/translation.service';
           <div class="absolute bottom-0 right-20 w-80 h-80 bg-accent-500/10 rounded-full blur-3xl"></div>
         </div>
         
-        <div class="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div class="relative mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
           <header class="mb-10 animate-fade-in">
             <div class="flex items-center gap-4 mb-4">
               <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-glow">
