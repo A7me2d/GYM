@@ -1,0 +1,62 @@
+export interface Exercise {
+  id: number;
+  name: string;
+  sets: number;
+  reps: string;
+  rest: string;
+  primaryMuscle: string;
+  secondaryMuscle: string[];
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  equipment: string;
+  imageUrl: string;
+  description: string;
+  instructions: string[];
+  commonMistakes: string[];
+  safetyTips: string[];
+  alternatives: string[];
+}
+
+export interface ExerciseLog {
+  exerciseId: number;
+  completed: boolean;
+  weights: number[];
+  completedSets: number;
+}
+
+export interface WorkoutDay {
+  id: number;
+  name: string;
+  focus: string;
+  isRestDay: boolean;
+  exercises: Exercise[];
+}
+
+export interface WorkoutLog {
+  id: string;
+  date: string;
+  dayId: number;
+  exerciseLogs: ExerciseLog[];
+  totalVolume: number;
+  duration: number;
+  completed: boolean;
+}
+
+export interface WeeklyProgress {
+  weekNumber: number;
+  year: number;
+  startDate: string;
+  endDate: string;
+  completedDays: number[];
+  totalVolume: number;
+  totalWorkouts: number;
+}
+
+export interface UserStats {
+  totalWorkouts: number;
+  totalVolume: number;
+  totalSets: number;
+  totalReps: number;
+  personalRecords: { [exerciseName: string]: number };
+  streak: number;
+  lastWorkoutDate: string | null;
+}
