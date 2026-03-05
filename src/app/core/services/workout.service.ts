@@ -1,61 +1,43 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { Exercise, WorkoutDay, WorkoutLog, ExerciseLog, UserStats, WeeklyProgress } from '../models/exercise.model';
 import { WORKOUT_DAYS, getWorkoutDay, getExercise } from '../data/workout-data';
 import { StorageService } from './storage.service';
+import { SupabaseDatabaseService } from './supabase-database.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutService {
-  readonly workoutDays = signal<WorkoutDay[]>(WORKOUT_DAYS);
+  private databaseService = inject(SupabaseDatabaseService);
+
+  readonly workoutDays = this.databaseService.workoutDays;
   readonly currentWorkout = signal<WorkoutLog | null>(null);
-  readonly userStats = signal<UserStats>({
-    totalWorkouts: 0,
-    totalVolume: 0,
-    totalSets: 0,
-    totalReps: 0,
-    personalRecords: {},
-    personalRecordsCount: 0,
-    streak: 0,
-    lastWorkoutDate: null
-  });
-  
+  readonly userStats = this.databaseService.userStats;
+
   readonly todayWorkout = computed(() => {
     const dayOfWeek = new Date().getDay();
     // Convert Sunday (0) to day 7, otherwise use day number
     const dayId = dayOfWeek === 0 ? 7 : dayOfWeek;
-    return getWorkoutDay(dayId);
+    const days = this.workoutDays();
+    return days.find(d => d.id === dayId) || getWorkoutDay(dayId);
   });
 
-  readonly weeklyProgress = computed<WeeklyProgress>(() => {
-    const now = new Date();
-    const startOfWeek = this.getStartOfWeek(now);
-    const endOfWeek = this.getEndOfWeek(now);
-    
-    const logs = this.storageService.getWorkoutLogsByDateRange(
-      this.formatDate(startOfWeek),
-      this.formatDate(endOfWeek)
-    );
-    
-    return {
-      weekNumber: this.getWeekNumber(now),
-      year: now.getFullYear(),
-      startDate: this.formatDate(startOfWeek),
-      endDate: this.formatDate(endOfWeek),
-      completedDays: logs.map(log => log.dayId),
-      totalVolume: logs.reduce((sum, log) => sum + log.totalVolume, 0),
-      totalWorkouts: logs.filter(log => log.completed).length
-    };
+  readonly weeklyProgress = computed<WeeklyProgress | null>(() => {
+    return this.databaseService.weeklyProgress();
   });
 
-  constructor(private storageService: StorageService) {
-    // Load saved stats from storage
-    const savedStats = this.storageService.getUserStats();
-    this.userStats.set(savedStats);
+  constructor(private storageService: StorageService) {}
+
+  async initialize(): Promise<void> {
+    await this.databaseService.loadWorkoutDays();
+    await this.databaseService.loadWorkoutLogs();
+    await this.databaseService.loadUserStats();
   }
 
   getWorkoutDay(id: number): WorkoutDay | undefined {
-    return getWorkoutDay(id);
+    const days = this.workoutDays();
+    const found = days.find(d => d.id === id);
+    return found || getWorkoutDay(id);
   }
 
   getExercise(id: number): Exercise | undefined {
@@ -92,12 +74,12 @@ export class WorkoutService {
     }
   }
 
-  completeWorkout(): void {
+  async completeWorkout(): Promise<void> {
     const current = this.currentWorkout();
     if (current) {
       current.completed = true;
-      this.storageService.saveWorkoutLog(current);
-      this.updateUserStats(current);
+      await this.storageService.saveWorkoutLog(current);
+      await this.updateUserStats(current);
       this.currentWorkout.set(null);
     }
   }
@@ -133,20 +115,23 @@ export class WorkoutService {
     }
   }
 
-  private updateUserStats(log: WorkoutLog): void {
-    const stats = this.userStats();
+  private async updateUserStats(log: WorkoutLog): Promise<void> {
+    const currentStats = this.userStats();
+    if (!currentStats) return;
+
+    const stats = { ...currentStats };
     stats.totalWorkouts++;
     stats.totalVolume += log.totalVolume;
-    
+
     let totalSets = 0;
     let totalReps = 0;
-    
+
     for (const exerciseLog of log.exerciseLogs) {
       const exercise = this.getExercise(exerciseLog.exerciseId);
       if (exercise) {
         totalSets += exerciseLog.completedSets;
         totalReps += exerciseLog.completedSets * this.parseReps(exercise.reps);
-        
+
         // Update PRs
         const maxWeight = Math.max(...exerciseLog.weights);
         const currentPR = stats.personalRecords[exercise.name] || 0;
@@ -155,12 +140,12 @@ export class WorkoutService {
         }
       }
     }
-    
+
     stats.personalRecordsCount = Object.keys(stats.personalRecords).length;
-    
+
     stats.totalSets += totalSets;
     stats.totalReps += totalReps;
-    
+
     // Update streak
     const lastDate = stats.lastWorkoutDate;
     const today = this.formatDate(new Date());
@@ -176,9 +161,8 @@ export class WorkoutService {
       stats.streak = 1;
     }
     stats.lastWorkoutDate = today;
-    
-    this.storageService.saveUserStats(stats);
-    this.userStats.set({ ...stats });
+
+    await this.storageService.saveUserStats(stats);
   }
 
   private parseReps(reps: string): number {
@@ -198,24 +182,5 @@ export class WorkoutService {
 
   private formatDate(date: Date): string {
     return date.toISOString().split('T')[0];
-  }
-
-  private getStartOfWeek(date: Date): Date {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
-  }
-
-  private getEndOfWeek(date: Date): Date {
-    const start = this.getStartOfWeek(date);
-    return new Date(start.getTime() + 6 * 24 * 60 * 60 * 1000);
-  }
-
-  private getWeekNumber(date: Date): number {
-    const start = new Date(date.getFullYear(), 0, 1);
-    const diff = date.getTime() - start.getTime();
-    const oneWeek = 7 * 24 * 60 * 60 * 1000;
-    return Math.ceil(diff / oneWeek);
   }
 }

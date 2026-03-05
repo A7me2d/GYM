@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { WorkoutService } from '../../core/services/workout.service';
 import { DayCardComponent } from '../../shared/components/day-card/day-card.component';
 import { TranslationService } from '../../core/services/translation.service';
+import { UserStats, WeeklyProgress } from '../../core/models/exercise.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -52,7 +53,7 @@ import { TranslationService } from '../../core/services/translation.service';
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-value text-orange-400">{{ userStats().streak }}</span>
+                <span class="stat-value text-orange-400">{{ stats().streak }}</span>
                 <span class="stat-label">{{ t('dashboard.streak') }}</span>
               </div>
             </div>
@@ -67,7 +68,7 @@ import { TranslationService } from '../../core/services/translation.service';
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-value text-green-400">{{ userStats().totalWorkouts }}</span>
+                <span class="stat-value text-green-400">{{ stats().totalWorkouts }}</span>
                 <span class="stat-label">{{ t('dashboard.workouts') }}</span>
               </div>
             </div>
@@ -81,7 +82,7 @@ import { TranslationService } from '../../core/services/translation.service';
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-value text-primary-400">{{ userStats().totalVolume | number }}</span>
+                <span class="stat-value text-primary-400">{{ stats().totalVolume | number }}</span>
                 <span class="stat-label">{{ t('dashboard.kgLifted') }}</span>
               </div>
             </div>
@@ -97,7 +98,7 @@ import { TranslationService } from '../../core/services/translation.service';
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-value text-accent-400">{{ userStats().personalRecordsCount }}</span>
+                <span class="stat-value text-accent-400">{{ stats().personalRecordsCount }}</span>
                 <span class="stat-label">{{ t('dashboard.personalRecords') }}</span>
               </div>
             </div>
@@ -116,13 +117,13 @@ import { TranslationService } from '../../core/services/translation.service';
                       <line x1="3" y1="10" x2="21" y2="10"/>
                     </svg>
                   </div>
-                  <h2 class="text-xl font-bold text-white">{{ t('dashboard.weekProgress') }} {{ weeklyProgress().weekNumber }} {{ t('dashboard.progress') }}</h2>
+                  <h2 class="text-xl font-bold text-white">{{ t('dashboard.weekProgress') }} {{ progress().weekNumber }} {{ t('dashboard.progress') }}</h2>
                 </div>
-                <span class="badge badge-primary text-sm">{{ weeklyProgress().totalWorkouts }}/6 {{ t('dashboard.workoutsCount') }}</span>
+                <span class="badge badge-primary text-sm">{{ progress().totalWorkouts }}/6 {{ t('dashboard.workoutsCount') }}</span>
               </div>
               
               <div class="progress-bar h-4 mb-4">
-                <div class="progress-fill" [style.width.%]="(weeklyProgress().totalWorkouts / 6) * 100"></div>
+                <div class="progress-fill" [style.width.%]="(progress().totalWorkouts / 6) * 100"></div>
               </div>
               
               <div class="flex justify-between text-sm text-dark-400">
@@ -131,10 +132,10 @@ import { TranslationService } from '../../core/services/translation.service';
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
                   </svg>
-                  {{ weeklyProgress().startDate }}
+                  {{ progress().startDate }}
                 </span>
                 <span class="flex items-center gap-2">
-                  {{ weeklyProgress().endDate }}
+                  {{ progress().endDate }}
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="5 3 19 12 5 21 5 3"/>
                   </svg>
@@ -161,7 +162,7 @@ import { TranslationService } from '../../core/services/translation.service';
                 @for (day of workoutDays(); track day.id) {
                   <app-day-card
                     [day]="day"
-                    [isCompleted]="weeklyProgress().completedDays.includes(day.id)"
+                    [isCompleted]="progress().completedDays.includes(day.id)"
                     [isToday]="todayWorkout()?.id === day.id"
                   />
                 }
@@ -178,9 +179,37 @@ export class DashboardComponent {
   private translationService = inject(TranslationService);
   
   workoutDays = this.workoutService.workoutDays;
-  weeklyProgress = this.workoutService.weeklyProgress;
   todayWorkout = this.workoutService.todayWorkout;
-  userStats = this.workoutService.userStats;
+
+  // Provide default values for null safety
+  stats = computed(() => this.workoutService.userStats() || this.defaultStats());
+  progress = computed(() => this.workoutService.weeklyProgress() || this.defaultProgress());
+
+  private defaultStats(): UserStats {
+    return {
+      totalWorkouts: 0,
+      totalVolume: 0,
+      totalSets: 0,
+      totalReps: 0,
+      personalRecords: {},
+      personalRecordsCount: 0,
+      streak: 0,
+      lastWorkoutDate: null
+    };
+  }
+
+  private defaultProgress(): WeeklyProgress {
+    const now = new Date();
+    return {
+      weekNumber: 1,
+      year: now.getFullYear(),
+      startDate: now.toISOString().split('T')[0],
+      endDate: now.toISOString().split('T')[0],
+      completedDays: [],
+      totalVolume: 0,
+      totalWorkouts: 0
+    };
+  }
 
   t(key: string): string {
     return this.translationService.t(key);

@@ -3,7 +3,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { WorkoutService } from '../../core/services/workout.service';
 import { StorageService } from '../../core/services/storage.service';
 import { TranslationService } from '../../core/services/translation.service';
-import { WorkoutLog } from '../../core/models/exercise.model';
+import { WorkoutLog, UserStats } from '../../core/models/exercise.model';
 
 @Component({
   selector: 'app-analytics',
@@ -47,7 +47,7 @@ import { WorkoutLog } from '../../core/models/exercise.model';
                   </svg>
                 </div>
               </div>
-              <div class="text-3xl md:text-4xl font-bold text-white">{{ userStats().totalWorkouts }}</div>
+              <div class="text-3xl md:text-4xl font-bold text-white">{{ stats().totalWorkouts }}</div>
               <div class="text-sm text-dark-400 mt-1">{{ t('analytics.totalWorkouts') }}</div>
             </div>
 
@@ -61,7 +61,7 @@ import { WorkoutLog } from '../../core/models/exercise.model';
                   </svg>
                 </div>
               </div>
-              <div class="text-3xl md:text-4xl font-bold text-white">{{ userStats().totalVolume | number }}</div>
+              <div class="text-3xl md:text-4xl font-bold text-white">{{ stats().totalVolume | number }}</div>
               <div class="text-sm text-dark-400 mt-1">{{ t('analytics.kgLifted') }}</div>
             </div>
 
@@ -77,7 +77,7 @@ import { WorkoutLog } from '../../core/models/exercise.model';
                   </svg>
                 </div>
               </div>
-              <div class="text-3xl md:text-4xl font-bold text-white">{{ userStats().totalSets }}</div>
+              <div class="text-3xl md:text-4xl font-bold text-white">{{ stats().totalSets }}</div>
               <div class="text-sm text-dark-400 mt-1">{{ t('analytics.totalSets') }}</div>
             </div>
 
@@ -91,7 +91,7 @@ import { WorkoutLog } from '../../core/models/exercise.model';
                   </svg>
                 </div>
               </div>
-              <div class="text-3xl md:text-4xl font-bold text-white">{{ userStats().streak }}</div>
+              <div class="text-3xl md:text-4xl font-bold text-white">{{ stats().streak }}</div>
               <div class="text-sm text-dark-400 mt-1">{{ t('analytics.dayStreak') }}</div>
             </div>
           </section>
@@ -145,9 +145,9 @@ import { WorkoutLog } from '../../core/models/exercise.model';
               <h2 class="text-xl font-bold text-white">{{ t('analytics.personalRecords') }}</h2>
             </div>
             
-            @if (Object.keys(userStats().personalRecords).length > 0) {
+            @if (Object.keys(stats().personalRecords).length > 0) {
               <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-                @for (entry of Object.entries(userStats().personalRecords); track entry[0]) {
+                @for (entry of Object.entries(stats().personalRecords); track entry[0]) {
                   <div class="card p-5 flex items-center justify-between group hover:border-primary-500/50 transition-colors">
                     <div class="flex items-center gap-3">
                       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-500/30 to-orange-500/20 flex items-center justify-center">
@@ -243,10 +243,25 @@ export class AnalyticsComponent implements OnInit {
   private storageService = inject(StorageService);
   private translationService = inject(TranslationService);
 
-  userStats = this.workoutService.userStats;
   workoutHistory = signal<WorkoutLog[]>([]);
   
   Object = Object;
+
+  // Provide default values for null safety
+  stats = computed(() => this.workoutService.userStats() || this.defaultStats());
+
+  private defaultStats(): UserStats {
+    return {
+      totalWorkouts: 0,
+      totalVolume: 0,
+      totalSets: 0,
+      totalReps: 0,
+      personalRecords: {},
+      personalRecordsCount: 0,
+      streak: 0,
+      lastWorkoutDate: null
+    };
+  }
 
   t(key: string): string {
     return this.translationService.t(key);

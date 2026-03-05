@@ -1,9 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ThemeService } from '../../core/services/theme.service';
 import { StorageService } from '../../core/services/storage.service';
 import { TranslationService } from '../../core/services/translation.service';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-settings',
@@ -34,6 +36,46 @@ import { TranslationService } from '../../core/services/translation.service';
               </div>
             </div>
           </header>
+
+          <!-- Account Section -->
+          <section class="card p-6 md:p-8 mb-6 animate-slide-up">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-primary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <h2 class="text-xl font-bold text-white">Account</h2>
+            </div>
+            
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-dark-700/30 mb-4">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                <span class="text-xl font-bold text-white">{{ userInitial() }}</span>
+              </div>
+              <div class="flex-1">
+                <div class="font-semibold text-white">{{ userEmail() }}</div>
+                <div class="text-sm text-dark-400">Signed in</div>
+              </div>
+            </div>
+
+            <button 
+              class="btn btn-secondary w-full justify-start p-5 group"
+              (click)="logout()"
+            >
+              <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+              </div>
+              <div class="text-left">
+                <div class="font-semibold">Sign Out</div>
+                <div class="text-xs text-dark-400">Log out of your account</div>
+              </div>
+            </button>
+          </section>
 
           <!-- Theme Settings -->
           <section class="card p-6 md:p-8 mb-6 animate-slide-up">
@@ -357,6 +399,8 @@ export class SettingsComponent {
   private themeService = inject(ThemeService);
   private storageService = inject(StorageService);
   private translationService = inject(TranslationService);
+  private supabaseService = inject(SupabaseService);
+  private router = inject(Router);
 
   isDarkMode = this.themeService.isDarkMode;
   isArabic = this.translationService.isArabic;
@@ -380,6 +424,20 @@ export class SettingsComponent {
   calorieActivity = 1.55;
   calorieResult = signal<number | null>(null);
 
+  // User info
+  userEmail = () => {
+    const user = this.supabaseService.user();
+    return user?.email || 'User';
+  };
+  
+  userInitial = () => {
+    const user = this.supabaseService.user();
+    if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return 'U';
+  };
+
   t(key: string): string {
     return this.translationService.t(key);
   }
@@ -394,6 +452,11 @@ export class SettingsComponent {
 
   onUnitChange(): void {
     localStorage.setItem('hypertrophy_weight_unit', this.weightUnit());
+  }
+
+  async logout(): Promise<void> {
+    await this.supabaseService.signOut();
+    this.router.navigate(['/login']);
   }
 
   calculateBMI(): void {

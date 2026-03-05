@@ -1,53 +1,38 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { WorkoutLog, WeeklyProgress, UserStats } from '../models/exercise.model';
+import { SupabaseDatabaseService } from './supabase-database.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
-  private readonly WORKOUT_LOGS_KEY = 'hypertrophy_workout_logs';
-  private readonly USER_STATS_KEY = 'hypertrophy_user_stats';
+  private databaseService = inject(SupabaseDatabaseService);
   private readonly THEME_KEY = 'hypertrophy_theme';
 
   // Workout Logs
   getWorkoutLogs(): WorkoutLog[] {
-    const data = localStorage.getItem(this.WORKOUT_LOGS_KEY);
-    return data ? JSON.parse(data) : [];
+    return this.databaseService.workoutLogs();
   }
 
-  saveWorkoutLog(log: WorkoutLog): void {
-    const logs = this.getWorkoutLogs();
-    const existingIndex = logs.findIndex(l => l.id === log.id);
-    if (existingIndex >= 0) {
-      logs[existingIndex] = log;
-    } else {
-      logs.push(log);
-    }
-    localStorage.setItem(this.WORKOUT_LOGS_KEY, JSON.stringify(logs));
+  async saveWorkoutLog(log: WorkoutLog): Promise<{ success: boolean; error?: string }> {
+    return this.databaseService.saveWorkoutLog(log);
   }
 
-  deleteWorkoutLog(id: string): void {
-    const logs = this.getWorkoutLogs().filter(l => l.id !== id);
-    localStorage.setItem(this.WORKOUT_LOGS_KEY, JSON.stringify(logs));
+  async deleteWorkoutLog(id: string): Promise<{ success: boolean; error?: string }> {
+    return this.databaseService.deleteWorkoutLog(id);
   }
 
   getWorkoutLogsByDateRange(startDate: string, endDate: string): WorkoutLog[] {
-    return this.getWorkoutLogs().filter(log => {
-      return log.date >= startDate && log.date <= endDate;
-    });
+    return this.databaseService.getWorkoutLogsByDateRange(startDate, endDate);
   }
 
   getWorkoutLogsByDay(dayId: number): WorkoutLog[] {
-    return this.getWorkoutLogs().filter(log => log.dayId === dayId);
+    return this.databaseService.getWorkoutLogsByDay(dayId);
   }
 
   // User Stats
   getUserStats(): UserStats {
-    const data = localStorage.getItem(this.USER_STATS_KEY);
-    if (data) {
-      return JSON.parse(data);
-    }
-    return {
+    return this.databaseService.userStats() || {
       totalWorkouts: 0,
       totalVolume: 0,
       totalSets: 0,
@@ -59,11 +44,11 @@ export class StorageService {
     };
   }
 
-  saveUserStats(stats: UserStats): void {
-    localStorage.setItem(this.USER_STATS_KEY, JSON.stringify(stats));
+  async saveUserStats(stats: UserStats): Promise<void> {
+    await this.databaseService.updateUserStats(stats);
   }
 
-  // Theme
+  // Theme (still uses localStorage for theme preference)
   getTheme(): 'dark' | 'light' {
     const theme = localStorage.getItem(this.THEME_KEY);
     return (theme as 'dark' | 'light') || 'dark';
@@ -74,8 +59,21 @@ export class StorageService {
   }
 
   // Clear all data
-  clearAllData(): void {
-    localStorage.removeItem(this.WORKOUT_LOGS_KEY);
-    localStorage.removeItem(this.USER_STATS_KEY);
+  async clearAllData(): Promise<void> {
+    // This will clear all workout logs from the database
+    const logs = this.getWorkoutLogs();
+    for (const log of logs) {
+      await this.deleteWorkoutLog(log.id);
+    }
+    await this.saveUserStats({
+      totalWorkouts: 0,
+      totalVolume: 0,
+      totalSets: 0,
+      totalReps: 0,
+      personalRecords: {},
+      personalRecordsCount: 0,
+      streak: 0,
+      lastWorkoutDate: null
+    });
   }
 }
