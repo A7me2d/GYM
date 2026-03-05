@@ -3,14 +3,15 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Exercise, ExerciseLog } from '../../../core/models/exercise.model';
 import { TranslationService } from '../../../core/services/translation.service';
+import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-exercise-card',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ImageViewerComponent],
   template: `
     <div 
-      class="card p-5 md:p-6 group relative overflow-hidden"
+      class="card my-5 p-5 md:p-6 group relative overflow-hidden"
       [class.border-green-500/50]="isCompleted"
       [class.opacity-70]="isCompleted"
     >
@@ -20,7 +21,10 @@ import { TranslationService } from '../../../core/services/translation.service';
       
       <div class="relative flex items-start gap-4">
         <!-- Exercise Image -->
-        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-dark-700 flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+        <div 
+          class="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-dark-700 flex-shrink-0 group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+          (click)="showImagePreview = true"
+        >
           <img 
             [src]="exercise.imageUrl" 
             [alt]="exercise.name"
@@ -29,6 +33,13 @@ import { TranslationService } from '../../../core/services/translation.service';
             (error)="onImageError($event)"
           />
         </div>
+
+        <!-- Image Viewer Modal -->
+        <app-image-viewer
+          [imageUrl]="exercise.imageUrl"
+          [imageAlt]="exercise.name"
+          [(isOpen)]="showImagePreview"
+        />
 
         <!-- Exercise Info -->
         <div class="flex-1 min-w-0">
@@ -140,6 +151,7 @@ export class ExerciseCardComponent {
   completeChange = output<{ exerciseId: number; completed: boolean }>();
 
   weightInputs: number[] = [];
+  showImagePreview = false;
 
   private translationService = inject(TranslationService);
 

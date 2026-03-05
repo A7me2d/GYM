@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { WorkoutService } from '../../core/services/workout.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { Exercise } from '../../core/models/exercise.model';
+import { ImageViewerComponent } from '../../shared/components/image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-exercise-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ImageViewerComponent],
   template: `
     <div class="min-h-screen">
       @if (exercise()) {
@@ -17,8 +18,9 @@ import { Exercise } from '../../core/models/exercise.model';
           <img 
             [src]="exercise()?.imageUrl" 
             [alt]="exercise()?.name"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover cursor-pointer"
             (error)="onImageError($event)"
+            (click)="showImagePreview = true"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/70 to-transparent"></div>
           <div class="absolute inset-0">
@@ -49,6 +51,13 @@ import { Exercise } from '../../core/models/exercise.model';
             </div>
           </div>
         </div>
+
+        <!-- Image Viewer Modal -->
+        <app-image-viewer
+          [imageUrl]="exercise()?.imageUrl || ''"
+          [imageAlt]="exercise()?.name || ''"
+          [(isOpen)]="showImagePreview"
+        />
 
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
           <!-- Stats Grid -->
@@ -272,6 +281,7 @@ export class ExerciseDetailsComponent implements OnInit {
   private translationService = inject(TranslationService);
 
   exercise = signal<Exercise | undefined>(undefined);
+  showImagePreview = false;
 
   t(key: string): string {
     return this.translationService.t(key);
