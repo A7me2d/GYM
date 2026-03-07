@@ -216,6 +216,124 @@ CREATE POLICY "Users can update their own stats" ON user_stats
   FOR UPDATE USING (auth.uid() = user_id);
 
 -- =============================================
+-- BODY_METRICS TABLE (weight and body tracking)
+-- =============================================
+CREATE TABLE body_metrics (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  weight DECIMAL NOT NULL,
+  height DECIMAL NOT NULL,
+  bmi DECIMAL NOT NULL,
+  date DATE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE body_metrics ENABLE ROW LEVEL SECURITY;
+
+-- Policies for body_metrics
+CREATE POLICY "Users can view their own body metrics" ON body_metrics
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own body metrics" ON body_metrics
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own body metrics" ON body_metrics
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own body metrics" ON body_metrics
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Index for faster queries
+CREATE INDEX idx_body_metrics_user_id ON body_metrics(user_id);
+CREATE INDEX idx_body_metrics_date ON body_metrics(date);
+
+-- =============================================
+-- HOME_WORKOUT_LOGS TABLE (home bodyweight workout history)
+-- =============================================
+CREATE TABLE home_workout_logs (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  date DATE NOT NULL,
+  day_id INTEGER NOT NULL,
+  duration INTEGER DEFAULT 0,
+  completed BOOLEAN DEFAULT false,
+  difficulty_mode TEXT NOT NULL CHECK (difficulty_mode IN ('Beginner', 'Intermediate', 'Advanced')),
+  exercise_logs JSONB DEFAULT '[]',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE home_workout_logs ENABLE ROW LEVEL SECURITY;
+
+-- Policies for home_workout_logs
+CREATE POLICY "Users can view their own home workout logs" ON home_workout_logs
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own home workout logs" ON home_workout_logs
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own home workout logs" ON home_workout_logs
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own home workout logs" ON home_workout_logs
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Index for faster queries
+CREATE INDEX idx_home_workout_logs_user_id ON home_workout_logs(user_id);
+CREATE INDEX idx_home_workout_logs_date ON home_workout_logs(date);
+
+-- =============================================
+-- HOME_USER_PROGRESS TABLE (home workout stats)
+-- =============================================
+CREATE TABLE home_user_progress (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE UNIQUE NOT NULL,
+  total_workouts INTEGER DEFAULT 0,
+  streak INTEGER DEFAULT 0,
+  last_workout_date DATE,
+  completed_days INTEGER[] DEFAULT '{}',
+  difficulty_mode TEXT DEFAULT 'Intermediate' CHECK (difficulty_mode IN ('Beginner', 'Intermediate', 'Advanced')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE home_user_progress ENABLE ROW LEVEL SECURITY;
+
+-- Policies for home_user_progress
+CREATE POLICY "Users can view their own home progress" ON home_user_progress
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own home progress" ON home_user_progress
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own home progress" ON home_user_progress
+  FOR UPDATE USING (auth.uid() = user_id);
+
+-- Index for faster queries
+CREATE INDEX idx_home_user_progress_user_id ON home_user_progress(user_id);
+
+-- Trigger for updated_at
+CREATE TRIGGER update_home_user_progress_updated_at
+  BEFORE UPDATE ON home_user_progress
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Initialize home_user_progress on profile creation
+CREATE OR REPLACE FUNCTION init_home_user_progress()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.home_user_progress (user_id)
+  VALUES (NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_profile_created_home_progress
+  AFTER INSERT ON profiles
+  FOR EACH ROW EXECUTE FUNCTION init_home_user_progress();
+
+-- =============================================
 -- SEED DATA - EXERCISES
 -- =============================================
 INSERT INTO exercises (id, name, sets, reps, rest, primary_muscle, secondary_muscle, difficulty, equipment, image_url, description, instructions, common_mistakes, safety_tips, alternatives) VALUES

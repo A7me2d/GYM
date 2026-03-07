@@ -27,6 +27,28 @@ export const routes: Routes = [
     loadComponent: () => import('./features/exercise-details/exercise-details.component').then(m => m.ExerciseDetailsComponent),
     canActivate: [authGuard]
   },
+  // Home Workout Routes
+  {
+    path: 'home-workout',
+    loadComponent: () => import('./features/home-workout/home-dashboard/home-dashboard.component').then(m => m.HomeDashboardComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'home-workout/day/:id',
+    loadComponent: () => import('./features/home-workout/home-workout-day/home-workout-day.component').then(m => m.HomeWorkoutDayComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'home-exercise/:id',
+    loadComponent: () => import('./features/home-workout/home-exercise-details/home-exercise-details.component').then(m => m.HomeExerciseDetailsComponent),
+    canActivate: [authGuard]
+  },
+  // Body Tracking Route
+  {
+    path: 'body-tracking',
+    loadComponent: () => import('./features/body-tracking/body-tracking.component').then(m => m.BodyTrackingComponent),
+    canActivate: [authGuard]
+  },
   {
     path: 'analytics',
     loadComponent: () => import('./features/analytics/analytics.component').then(m => m.AnalyticsComponent),

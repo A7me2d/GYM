@@ -51,6 +51,17 @@ import { SupabaseService } from '../../../core/services/supabase.service';
                 {{ t('nav.analytics') }}
               </a>
               <a 
+                routerLink="/body-tracking" 
+                routerLinkActive="nav-link-active"
+                class="nav-link"
+              >
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2c0 5-4 7-4 12a4 4 0 0 0 8 0c0-5-4-7-4-12z"/>
+                  <path d="M12 22a2 2 0 0 0 2-2c0-1.5-2-2-2-4 0 0-2 2.5-2 4a2 2 0 0 0 2 2z"/>
+                </svg>
+                {{ t('nav.bodyTracking') }}
+              </a>
+              <a 
                 routerLink="/settings" 
                 routerLinkActive="nav-link-active"
                 class="nav-link"
@@ -145,6 +156,18 @@ import { SupabaseService } from '../../../core/services/supabase.service';
                   <line x1="6" y1="20" x2="6" y2="14"/>
                 </svg>
                 {{ t('nav.analytics') }}
+              </a>
+              <a 
+                routerLink="/body-tracking" 
+                routerLinkActive="nav-link-active"
+                class="nav-link"
+                (click)="showMobileMenu = false"
+              >
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2c0 5-4 7-4 12a4 4 0 0 0 8 0c0-5-4-7-4-12z"/>
+                  <path d="M12 22a2 2 0 0 0 2-2c0-1.5-2-2-2-4 0 0-2 2.5-2 4a2 2 0 0 0 2 2z"/>
+                </svg>
+                {{ t('nav.bodyTracking') }}
               </a>
               <a 
                 routerLink="/settings" 
