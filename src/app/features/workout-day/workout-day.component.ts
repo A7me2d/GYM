@@ -15,7 +15,15 @@ import { Exercise, ExerciseLog, WorkoutDay } from '../../core/models/exercise.mo
   imports: [CommonModule, RouterLink, FormsModule, ExerciseCardComponent, TimerComponent],
   template: `
     <div class="min-h-screen">
-      @if (workoutDay()) {
+      <!-- Loading State -->
+      @if (loadingDays()) {
+        <div class="flex items-center justify-center min-h-[60vh]">
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-primary-500/30 border-t-primary-500 animate-spin"></div>
+            <p class="text-dark-400">{{ t('common.loading') }}</p>
+          </div>
+        </div>
+      } @else if (workoutDay()) {
         <!-- Hero Header -->
         <div class="relative overflow-hidden">
           <div class="absolute inset-0 bg-gradient-to-br from-primary-600/20 via-dark-950 to-accent-600/10"></div>
@@ -33,8 +41,8 @@ import { Exercise, ExerciseLog, WorkoutDay } from '../../core/models/exercise.mo
                   </svg>
                 </a>
                 <div class="flex-1">
-                  <h1 class="text-3xl md:text-4xl font-black text-gradient">{{ workoutDay()?.name }}</h1>
-                  <p class="text-lg text-dark-400 mt-1">{{ workoutDay()?.focus }}</p>
+                  <h1 class="text-3xl md:text-4xl font-black text-gradient">{{ getDayName() }}</h1>
+                  <p class="text-lg text-dark-400 mt-1">{{ getDayFocus() }}</p>
                 </div>
               </div>
 
@@ -149,7 +157,7 @@ import { Exercise, ExerciseLog, WorkoutDay } from '../../core/models/exercise.mo
                 <div class="mb-8 animate-slide-down">
                   <app-timer 
                     [duration]="currentRestTime()" 
-                    [label]="'Rest: ' + currentExercise()?.name"
+                    [label]="getRestLabel()"
                     (timerComplete)="onTimerComplete()"
                   />
                 </div>
@@ -205,9 +213,9 @@ import { Exercise, ExerciseLog, WorkoutDay } from '../../core/models/exercise.mo
                 <line x1="9" y1="9" x2="15" y2="15"/>
               </svg>
             </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Workout Not Found</h2>
-            <p class="text-dark-400 mb-6">The requested workout day doesn't exist.</p>
-            <a routerLink="/dashboard" class="btn btn-primary">Back to Dashboard</a>
+            <h2 class="text-2xl font-bold text-white mb-3">{{ t('workoutDay.notFoundTitle') }}</h2>
+            <p class="text-dark-400 mb-6">{{ t('workoutDay.notFoundDesc') }}</p>
+            <a routerLink="/dashboard" class="btn btn-primary">{{ t('workoutDay.backToDashboard') }}</a>
           </div>
         </div>
       }
@@ -227,9 +235,46 @@ export class WorkoutDayComponent implements OnInit {
   currentExercise = signal<Exercise | undefined>(undefined);
   currentRestTime = signal(90);
   exerciseLogs = signal<Map<number, ExerciseLog>>(new Map());
+  loadingDays = this.workoutService.loadingDays;
+
+  private readonly dayTranslations: Record<number, { nameAr: string; focusAr: string }> = {
+    1: { nameAr: 'اليوم 1', focusAr: 'صدر + ترايسيبس (تركيز ثقيل)' },
+    2: { nameAr: 'اليوم 2', focusAr: 'ظهر + بايسيبس' },
+    3: { nameAr: 'اليوم 3', focusAr: 'راحة / كارديو خفيف' },
+    4: { nameAr: 'اليوم 4', focusAr: 'أرجل (تركيز على الفخذ الأمامي)' },
+    5: { nameAr: 'اليوم 5', focusAr: 'أكتاف + كتف خلفي' },
+    6: { nameAr: 'اليوم 6', focusAr: 'أرجل (تركيز على الفخذ الخلفي)' },
+    7: { nameAr: 'اليوم 7', focusAr: 'راحة / كارديو خفيف' }
+  };
 
   t(key: string): string {
     return this.translationService.t(key);
+  }
+
+  isArabic(): boolean {
+    return this.translationService.language() === 'ar';
+  }
+
+  getDayName(): string {
+    const day = this.workoutDay();
+    if (!day) return '';
+    if (!this.isArabic()) return day.name;
+    return this.dayTranslations[day.id]?.nameAr || day.name;
+  }
+
+  getDayFocus(): string {
+    const day = this.workoutDay();
+    if (!day) return '';
+    if (!this.isArabic()) return day.focus;
+    return this.dayTranslations[day.id]?.focusAr || day.focus;
+  }
+
+  getRestLabel(): string {
+    const ex = this.currentExercise();
+    const restText = this.t('workoutDay.rest');
+    if (!ex) return restText;
+    const exName = this.isArabic() ? (ex.nameAr || ex.name) : ex.name;
+    return `${restText}: ${exName}`;
   }
 
   totalExercises = computed(() => this.workoutDay()?.exercises.length || 0);

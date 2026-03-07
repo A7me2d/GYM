@@ -212,6 +212,19 @@ export const TRANSLATIONS: Translations = {
     ar: 'راحة'
   },
 
+  'workoutDay.notFoundTitle': {
+    en: 'Workout Not Found',
+    ar: 'التمرين غير موجود'
+  },
+  'workoutDay.notFoundDesc': {
+    en: "The requested workout day doesn't exist.",
+    ar: 'يوم التمرين المطلوب غير موجود.'
+  },
+  'workoutDay.backToDashboard': {
+    en: 'Back to Dashboard',
+    ar: 'العودة للوحة التحكم'
+  },
+
   // Exercise Card
   'exerciseCard.sets': {
     en: 'Sets',

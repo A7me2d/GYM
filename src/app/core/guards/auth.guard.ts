@@ -1,11 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
+import { WorkoutService } from '../services/workout.service';
 import { firstValueFrom, filter, map } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 export const authGuard: CanActivateFn = async () => {
   const supabaseService = inject(SupabaseService);
+  const workoutService = inject(WorkoutService);
   const router = inject(Router);
 
   // Wait for auth to finish loading
@@ -14,6 +16,8 @@ export const authGuard: CanActivateFn = async () => {
   }
 
   if (supabaseService.isAuthenticated()) {
+    // Initialize workout data from API
+    await workoutService.initialize();
     return true;
   }
   

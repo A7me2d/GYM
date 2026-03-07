@@ -11,6 +11,15 @@ import { WorkoutLog, UserStats } from '../../core/models/exercise.model';
   imports: [CommonModule, DecimalPipe],
   template: `
     <div class="min-h-screen">
+      <!-- Loading State -->
+      @if (loading()) {
+        <div class="flex items-center justify-center min-h-[60vh]">
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-primary-500/30 border-t-primary-500 animate-spin"></div>
+            <p class="text-dark-400">{{ t('common.loading') }}</p>
+          </div>
+        </div>
+      } @else {
       <!-- Hero Header -->
       <div class="relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-primary-600/20 via-dark-950 to-accent-600/10"></div>
@@ -235,6 +244,7 @@ import { WorkoutLog, UserStats } from '../../core/models/exercise.model';
           </section>
         </div>
       </div>
+      }
     </div>
   `
 })
@@ -244,6 +254,7 @@ export class AnalyticsComponent implements OnInit {
   private translationService = inject(TranslationService);
 
   workoutHistory = signal<WorkoutLog[]>([]);
+  loading = this.workoutService.loading;
   
   Object = Object;
 

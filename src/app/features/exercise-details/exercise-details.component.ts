@@ -41,13 +41,13 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
           
           <!-- Title overlay -->
           <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10">
-            <h1 class="text-4xl md:text-5xl font-black text-white mb-4">{{ exercise()?.name }}</h1>
+            <h1 class="text-4xl md:text-5xl font-black text-white mb-4">{{ getName() }}</h1>
             <div class="flex flex-wrap gap-3">
               <span class="px-4 py-2 rounded-xl text-sm font-semibold border" [class]="getMuscleColor(exercise()?.primaryMuscle || '')">
-                {{ exercise()?.primaryMuscle }}
+                {{ getPrimaryMuscle() }}
               </span>
               <span class="badge badge-warning px-4 py-2">{{ exercise()?.difficulty }}</span>
-              <span class="badge badge-primary px-4 py-2">{{ exercise()?.equipment }}</span>
+              <span class="badge badge-primary px-4 py-2">{{ getEquipment() }}</span>
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
         <!-- Image Viewer Modal -->
         <app-image-viewer
           [imageUrl]="exercise()?.imageUrl || ''"
-          [imageAlt]="exercise()?.name || ''"
+          [imageAlt]="getName()"
           [(isOpen)]="showImagePreview"
         />
 
@@ -123,7 +123,7 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
               </div>
               <h2 class="text-xl font-bold text-white">{{ t('exerciseDetails.description') }}</h2>
             </div>
-            <p class="text-dark-300 leading-relaxed text-lg">{{ exercise()?.description }}</p>
+            <p class="text-dark-300 leading-relaxed text-lg">{{ getDescription() }}</p>
           </section>
 
           <!-- Instructions -->
@@ -142,7 +142,7 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
               <h2 class="text-xl font-bold text-white">{{ t('exerciseDetails.instructions') }}</h2>
             </div>
             <ol class="space-y-4">
-              @for (instruction of exercise()?.instructions; track $index; let i = $index) {
+              @for (instruction of getInstructions(); track $index; let i = $index) {
                 <li class="flex gap-4 group">
                   <span class="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 text-white flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
                     {{ i + 1 }}
@@ -165,7 +165,7 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
                 <h2 class="text-xl font-bold text-white">{{ t('exerciseDetails.commonMistakes') }}</h2>
               </div>
               <ul class="space-y-3">
-                @for (mistake of exercise()?.commonMistakes; track $index) {
+                @for (mistake of getCommonMistakes(); track $index) {
                   <li class="flex gap-3 text-dark-300">
                     <div class="w-6 h-6 rounded-lg bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <svg class="w-4 h-4 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -190,7 +190,7 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
                 <h2 class="text-xl font-bold text-white">{{ t('exerciseDetails.safetyTips') }}</h2>
               </div>
               <ul class="space-y-3">
-                @for (tip of exercise()?.safetyTips; track $index) {
+                @for (tip of getSafetyTips(); track $index) {
                   <li class="flex gap-3 text-dark-300">
                     <div class="w-6 h-6 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <svg class="w-4 h-4 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -218,9 +218,9 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
             </div>
             <div class="flex flex-wrap gap-3">
               <span class="px-4 py-2 rounded-xl text-sm font-semibold bg-primary-500/20 text-primary-400 border border-primary-500/30">
-                {{ t('exerciseDetails.primary') }}: {{ exercise()?.primaryMuscle }}
+                {{ t('exerciseDetails.primary') }}: {{ getPrimaryMuscle() }}
               </span>
-              @for (muscle of exercise()?.secondaryMuscle; track muscle) {
+              @for (muscle of getSecondaryMuscles(); track muscle) {
                 <span class="px-4 py-2 rounded-xl text-sm font-semibold bg-dark-700/50 text-dark-300 border border-dark-600/50">
                   {{ muscle }}
                 </span>
@@ -242,7 +242,7 @@ import { ImageViewerComponent } from '../../shared/components/image-viewer/image
               <h2 class="text-xl font-bold text-white">{{ t('exerciseDetails.alternatives') }}</h2>
             </div>
             <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-              @for (alt of exercise()?.alternatives; track alt) {
+              @for (alt of getAlternatives(); track alt) {
                 <div class="card p-4 text-center group hover:border-primary-500/50 transition-colors">
                   <span class="text-dark-200 font-medium group-hover:text-primary-400 transition-colors">{{ alt }}</span>
                 </div>
@@ -285,6 +285,61 @@ export class ExerciseDetailsComponent implements OnInit {
 
   t(key: string): string {
     return this.translationService.t(key);
+  }
+
+  isArabic(): boolean {
+    return this.translationService.language() === 'ar';
+  }
+
+  // Get translated content based on language
+  getName(): string {
+    const ex = this.exercise();
+    return this.isArabic() ? (ex?.nameAr || ex?.name || '') : (ex?.name || '');
+  }
+
+  getDescription(): string {
+    const ex = this.exercise();
+    return this.isArabic() ? (ex?.descriptionAr || ex?.description || '') : (ex?.description || '');
+  }
+
+  getPrimaryMuscle(): string {
+    const ex = this.exercise();
+    return this.isArabic() ? (ex?.primaryMuscleAr || ex?.primaryMuscle || '') : (ex?.primaryMuscle || '');
+  }
+
+  getEquipment(): string {
+    const ex = this.exercise();
+    return this.isArabic() ? (ex?.equipmentAr || ex?.equipment || '') : (ex?.equipment || '');
+  }
+
+  getInstructions(): string[] {
+    const ex = this.exercise();
+    if (!ex) return [];
+    return this.isArabic() ? (ex.instructionsAr.length > 0 ? ex.instructionsAr : ex.instructions) : ex.instructions;
+  }
+
+  getCommonMistakes(): string[] {
+    const ex = this.exercise();
+    if (!ex) return [];
+    return this.isArabic() ? (ex.commonMistakesAr.length > 0 ? ex.commonMistakesAr : ex.commonMistakes) : ex.commonMistakes;
+  }
+
+  getSafetyTips(): string[] {
+    const ex = this.exercise();
+    if (!ex) return [];
+    return this.isArabic() ? (ex.safetyTipsAr.length > 0 ? ex.safetyTipsAr : ex.safetyTips) : ex.safetyTips;
+  }
+
+  getSecondaryMuscles(): string[] {
+    const ex = this.exercise();
+    if (!ex) return [];
+    return this.isArabic() ? (ex.secondaryMuscleAr.length > 0 ? ex.secondaryMuscleAr : ex.secondaryMuscle) : ex.secondaryMuscle;
+  }
+
+  getAlternatives(): string[] {
+    const ex = this.exercise();
+    if (!ex) return [];
+    return this.isArabic() ? (ex.alternativesAr.length > 0 ? ex.alternativesAr : ex.alternatives) : ex.alternatives;
   }
 
   ngOnInit(): void {

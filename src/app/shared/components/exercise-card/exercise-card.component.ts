@@ -27,7 +27,7 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
         >
           <img 
             [src]="exercise().imageUrl" 
-            [alt]="exercise().name"
+            [alt]="getName()"
             class="w-full h-full object-cover"
             loading="lazy"
             (error)="onImageError($event)"
@@ -37,7 +37,7 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
         <!-- Image Viewer Modal -->
         <app-image-viewer
           [imageUrl]="exercise().imageUrl"
-          [imageAlt]="exercise().name"
+          [imageAlt]="getName()"
           [(isOpen)]="showImagePreview"
         />
 
@@ -45,10 +45,10 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
         <div class="flex-1 min-w-0">
           <div class="flex items-start justify-between gap-2 mb-3">
             <div>
-              <h4 class="text-lg font-bold text-white group-hover:text-primary-400 transition-colors truncate">{{ exercise().name }}</h4>
+              <h4 class="text-lg font-bold text-white group-hover:text-primary-400 transition-colors truncate">{{ getName() }}</h4>
               <div class="flex items-center gap-2 mt-1">
                 <span class="px-3 py-1 rounded-lg text-xs font-semibold" [class]="getMuscleColor(exercise().primaryMuscle)">
-                  {{ exercise().primaryMuscle }}
+                  {{ getPrimaryMuscle() }}
                 </span>
                 <span class="badge badge-warning">{{ exercise().difficulty }}</span>
               </div>
@@ -165,6 +165,20 @@ export class ExerciseCardComponent {
 
   t(key: string): string {
     return this.translationService.t(key);
+  }
+
+  isArabic(): boolean {
+    return this.translationService.language() === 'ar';
+  }
+
+  getName(): string {
+    const ex = this.exercise();
+    return this.isArabic() ? (ex.nameAr || ex.name) : ex.name;
+  }
+
+  getPrimaryMuscle(): string {
+    const ex = this.exercise();
+    return this.isArabic() ? (ex.primaryMuscleAr || ex.primaryMuscle) : ex.primaryMuscle;
   }
 
   onImageError(event: Event): void {

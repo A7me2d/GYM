@@ -13,6 +13,12 @@ export class WorkoutService {
   readonly workoutDays = this.databaseService.workoutDays;
   readonly currentWorkout = signal<WorkoutLog | null>(null);
   readonly userStats = this.databaseService.userStats;
+  
+  // Expose loading states
+  readonly loadingDays = this.databaseService.loadingDays;
+  readonly loadingLogs = this.databaseService.loadingLogs;
+  readonly loadingStats = this.databaseService.loadingStats;
+  readonly loading = this.databaseService.loading;
 
   readonly todayWorkout = computed(() => {
     const dayOfWeek = new Date().getDay();

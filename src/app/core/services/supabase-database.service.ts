@@ -12,7 +12,13 @@ export class SupabaseDatabaseService {
   workoutDays = signal<WorkoutDay[]>([]);
   workoutLogs = signal<WorkoutLog[]>([]);
   userStats = signal<UserStats | null>(null);
-  loading = signal(false);
+  
+  // Loading states for each data type
+  loadingDays = signal(false);
+  loadingLogs = signal(false);
+  loadingStats = signal(false);
+  loading = computed(() => this.loadingDays() || this.loadingLogs() || this.loadingStats());
+  
   error = signal<string | null>(null);
 
   // Computed weekly progress
@@ -43,6 +49,7 @@ export class SupabaseDatabaseService {
 
   // Load workout days (static data from database)
   async loadWorkoutDays(): Promise<void> {
+    this.loadingDays.set(true);
     const client = this.supabaseService.getClient();
 
     const { data, error } = await client
@@ -52,6 +59,7 @@ export class SupabaseDatabaseService {
 
     if (error) {
       this.error.set(error.message);
+      this.loadingDays.set(false);
       return;
     }
 
@@ -68,6 +76,7 @@ export class SupabaseDatabaseService {
     }));
 
     this.workoutDays.set(days);
+    this.loadingDays.set(false);
   }
 
   // Load exercises by IDs
@@ -86,19 +95,28 @@ export class SupabaseDatabaseService {
     return data.map(ex => ({
       id: ex.id,
       name: ex.name,
+      nameAr: ex.name_ar || '',
       sets: ex.sets,
       reps: ex.reps,
       rest: ex.rest,
       primaryMuscle: ex.primary_muscle,
+      primaryMuscleAr: ex.primary_muscle_ar || '',
       secondaryMuscle: ex.secondary_muscle || [],
+      secondaryMuscleAr: ex.secondary_muscle_ar || [],
       difficulty: ex.difficulty,
       equipment: ex.equipment,
+      equipmentAr: ex.equipment_ar || '',
       imageUrl: ex.image_url,
       description: ex.description,
+      descriptionAr: ex.description_ar || '',
       instructions: ex.instructions || [],
+      instructionsAr: ex.instructions_ar || [],
       commonMistakes: ex.common_mistakes || [],
+      commonMistakesAr: ex.common_mistakes_ar || [],
       safetyTips: ex.safety_tips || [],
-      alternatives: ex.alternatives || []
+      safetyTipsAr: ex.safety_tips_ar || [],
+      alternatives: ex.alternatives || [],
+      alternativesAr: ex.alternatives_ar || []
     }));
   }
 
@@ -107,7 +125,7 @@ export class SupabaseDatabaseService {
     const userId = this.supabaseService.getUserId();
     if (!userId) return;
 
-    this.loading.set(true);
+    this.loadingLogs.set(true);
     const client = this.supabaseService.getClient();
 
     const { data: logsData, error: logsError } = await client
@@ -134,7 +152,7 @@ export class SupabaseDatabaseService {
 
     if (logsError) {
       this.error.set(logsError.message);
-      this.loading.set(false);
+      this.loadingLogs.set(false);
       return;
     }
 
@@ -154,7 +172,7 @@ export class SupabaseDatabaseService {
     }));
 
     this.workoutLogs.set(logs);
-    this.loading.set(false);
+    this.loadingLogs.set(false);
   }
 
   // Load user stats
@@ -162,6 +180,7 @@ export class SupabaseDatabaseService {
     const userId = this.supabaseService.getUserId();
     if (!userId) return;
 
+    this.loadingStats.set(true);
     const client = this.supabaseService.getClient();
 
     const { data, error } = await client
@@ -195,6 +214,7 @@ export class SupabaseDatabaseService {
       streak: data.streak,
       lastWorkoutDate: data.last_workout_date
     });
+    this.loadingStats.set(false);
   }
 
   // Save workout log

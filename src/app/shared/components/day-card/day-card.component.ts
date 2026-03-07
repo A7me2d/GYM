@@ -132,14 +132,21 @@ export class DayCardComponent {
 
   private translationService = inject(TranslationService);
 
+  isArabic(): boolean {
+    return this.translationService.language() === 'ar';
+  }
+
   // Computed unique muscles for better performance
   uniqueMuscles = computed(() => {
     const d = this.day();
     if (d.isRestDay) return [];
     const muscles = new Set<string>();
     d.exercises.forEach(ex => {
-      muscles.add(ex.primaryMuscle);
-      ex.secondaryMuscle.forEach(m => muscles.add(m));
+      if (this.isArabic()) {
+        muscles.add(ex.primaryMuscleAr || ex.primaryMuscle);
+      } else {
+        muscles.add(ex.primaryMuscle);
+      }
     });
     return Array.from(muscles).slice(0, 4);
   });

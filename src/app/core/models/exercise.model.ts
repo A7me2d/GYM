@@ -1,19 +1,28 @@
 export interface Exercise {
   id: number;
   name: string;
+  nameAr: string;
   sets: number;
   reps: string;
   rest: string;
   primaryMuscle: string;
+  primaryMuscleAr: string;
   secondaryMuscle: string[];
+  secondaryMuscleAr: string[];
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   equipment: string;
+  equipmentAr: string;
   imageUrl: string;
   description: string;
+  descriptionAr: string;
   instructions: string[];
+  instructionsAr: string[];
   commonMistakes: string[];
+  commonMistakesAr: string[];
   safetyTips: string[];
+  safetyTipsAr: string[];
   alternatives: string[];
+  alternativesAr: string[];
 }
 
 export interface ExerciseLog {

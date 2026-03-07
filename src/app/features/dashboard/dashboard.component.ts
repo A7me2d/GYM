@@ -12,6 +12,15 @@ import { UserStats, WeeklyProgress } from '../../core/models/exercise.model';
   imports: [CommonModule, DecimalPipe, DayCardComponent],
   template: `
     <div class="min-h-screen">
+      <!-- Loading State -->
+      @if (loading()) {
+        <div class="flex items-center justify-center min-h-[60vh]">
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-primary-500/30 border-t-primary-500 animate-spin"></div>
+            <p class="text-dark-400">{{ t('common.loading') }}</p>
+          </div>
+        </div>
+      } @else {
       <!-- Hero Section with Gradient Background -->
       <div class="relative overflow-hidden">
         <!-- Animated background gradient -->
@@ -171,6 +180,7 @@ import { UserStats, WeeklyProgress } from '../../core/models/exercise.model';
           </section>
         </div>
       </div>
+      }
     </div>
   `
 })
@@ -180,6 +190,7 @@ export class DashboardComponent {
   
   workoutDays = this.workoutService.workoutDays;
   todayWorkout = this.workoutService.todayWorkout;
+  loading = this.workoutService.loading;
 
   // Provide default values for null safety
   stats = computed(() => this.workoutService.userStats() || this.defaultStats());
