@@ -115,7 +115,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Dumbbell Bench Press', 'Incline Bench Press', 'Machine Chest Press'],
         ['ضغط الدمبل', 'ضغط البنش المائل', 'ضغط الصدر بالماكينة'],
-        '/assets/day1/Barbell Bench Press.png'
+        '/assets/gym/day1/Barbell Bench Press.png'
       ),
       createExercise(
         2,
@@ -173,7 +173,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Incline Barbell Press', 'Reverse Grip Bench Press', 'Cable Incline Fly'],
         ['ضغط الباربل المائل', 'ضغط البنش بالقبضة العكسية', 'فتح الكابل المائل'],
-        '/assets/day1/Incline Dumbbell Press.png'
+        '/assets/gym/day1/Incline Dumbbell Press.png'
       ),
       createExercise(
         3,
@@ -231,7 +231,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Dumbbell Fly', 'Cable Crossover', 'Pec Deck'],
         ['فتح الدمبل', 'فتح الكابل', 'جهاز الصدر'],
-        '/assets/day1/Chest Fly Machine.png'
+        '/assets/gym/day1/Chest Fly Machine.png'
       ),
       createExercise(
         4,
@@ -289,7 +289,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Bench Dips', 'Assisted Dip Machine', 'Close Grip Bench Press'],
         ['غطس البنش', 'ماكينة الغطس المساعدة', 'ضغط البنش بالقبضة الضيقة'],
-        '/assets/day1/Weighted Dips.png'
+        '/assets/gym/day1/Weighted Dips.png'
       ),
       createExercise(
         5,
@@ -347,7 +347,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Straight Bar Pushdown', 'V-Bar Pushdown', 'Reverse Grip Pushdown'],
         ['ضغط البار المستقيم', 'ضغط البار V', 'ضغط القبضة العكسية'],
-        '/assets/day1/Rope Pushdown.png'
+        '/assets/gym/day1/Rope Pushdown.png'
       ),
       createExercise(
         6,
@@ -405,7 +405,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Skull Crushers', 'Cable Overhead Extension', 'EZ Bar Extension'],
         ['سحق الجمجمة', 'تمديد الكابل فوق الرأس', 'تمديد بار EZ'],
-        '/assets/day1/Overhead Dumbbell Triceps Extension.png'
+        '/assets/gym/day1/Overhead Dumbbell Triceps Extension.png'
       )
     ]
   },
@@ -471,7 +471,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Romanian Deadlift', 'Trap Bar Deadlift', 'Rack Pulls'],
         ['الرفعة الميتة الرومانية', 'الرفعة الميتة ببار التراب', 'سحب الرف'],
-        '/assets/day2/Deadlift.png'
+        '/assets/gym/day2/Deadlift.png'
       ),
       createExercise(
         8,
@@ -529,7 +529,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Dumbbell Row', 'T-Bar Row', 'Seated Cable Row'],
         ['سحب الدمبل', 'سحب بار T', 'سحب الكابل الجالس'],
-        '/assets/day2/Barbell Row.png'
+        '/assets/gym/day2/Barbell Row.png'
       ),
       createExercise(
         9,
@@ -587,7 +587,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Wide Grip Lat Pulldown', 'Reverse Grip Pulldown', 'Chin-ups'],
         ['سحب الظهر بالقبضة الواسعة', 'سحب الظهر بالقبضة العكسية', 'السحب للأعلى'],
-        '/assets/day2/Lat Pulldown.png'
+        '/assets/gym/day2/Lat Pulldown.png'
       ),
       createExercise(
         10,
@@ -647,7 +647,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Barbell Row', 'T-Bar Row', 'Machine Row'],
         ['سحب الباربل', 'سحب بار T', 'سحب الماكينة'],
-        '/assets/day2/Seated Cable Row.png'
+        '/assets/gym/day2/Seated Cable Row.png'
       ),
       createExercise(
         11,
@@ -707,7 +707,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['EZ Bar Curl', 'Dumbbell Curl', 'Cable Curl'],
         ['لف بار EZ', 'لف الدمبل', 'لف الكابل'],
-        '/assets/day2/Barbell Curl.png'
+        '/assets/gym/day2/Barbell Curl.png'
       ),
       createExercise(
         12,
@@ -765,7 +765,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Preacher Curl', 'Concentration Curl', 'Hammer Curl'],
         ['لف الواعظ', 'لف التركيز', 'لف المطرقة'],
-        '/assets/day2/Incline Dumbbell Curl.png'
+        '/assets/gym/day2/Incline Dumbbell Curl.png'
       )
     ]
   },
@@ -840,7 +840,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Front Squat', 'Goblet Squat', 'Leg Press'],
         ['سكوات أمامي', 'سكوات الكوبل', 'ضغط الأرجل'],
-        '/assets/day4/Barbell Squat.png'
+        '/assets/gym/day4/Barbell Squat.png'
       ),
       createExercise(
         14,
@@ -898,7 +898,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Leg Press', 'Front Squat', 'Bulgarian Split Squat'],
         ['ضغط الأرجل', 'سكوات أمامي', 'سكوات البلغاري'],
-        '/assets/day4/Hack Squat.png'
+        '/assets/gym/day4/Hack Squat.png'
       ),
       createExercise(
         15,
@@ -956,7 +956,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Hack Squat', 'Squat', 'Bulgarian Split Squat'],
         ['سكوات الهاك', 'سكوات', 'سكوات البلغاري'],
-        '/assets/day4/Leg Press.png'
+        '/assets/gym/day4/Leg Press.png'
       ),
       createExercise(
         16,
@@ -1016,7 +1016,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Sissy Squat', 'Reverse Nordic Curl', 'Cable Leg Extension'],
         ['سكوات السيزي', 'التمديد النوردي العكسي', 'تمديد الفخذ بالكابل'],
-        '/assets/day4/Leg Extension.png'
+        '/assets/gym/day4/Leg Extension.png'
       ),
       createExercise(
         17,
@@ -1076,7 +1076,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Seated Calf Raise', 'Donkey Calf Raise', 'Leg Press Calf Raise'],
         ['رفع الساق جالساً', 'رفع الساق بالحمار', 'رفع الساق بضغط الأرجل'],
-        '/assets/day4/Standing Calf Raise.png'
+        '/assets/gym/day4/Standing Calf Raise.png'
       )
     ]
   },
@@ -1142,7 +1142,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Barbell Overhead Press', 'Arnold Press', 'Machine Shoulder Press'],
         ['ضغط الباربل فوق الرأس', 'ضغط أرنولد', 'ضغط الكتف بالماكينة'],
-        '/assets/day5/Dumbbell Shoulder Press.png'
+        '/assets/gym/day5/Dumbbell Shoulder Press.png'
       ),
       createExercise(
         19,
@@ -1200,7 +1200,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Cable Lateral Raise', 'Machine Lateral Raise', 'Upright Row'],
         ['الرفع الجانبي بالكابل', 'الرفع الجانبي بالماكينة', 'سحب مستقيم'],
-        '/assets/day5/Lateral Raise.png'
+        '/assets/gym/day5/Lateral Raise.png'
       ),
       createExercise(
         20,
@@ -1258,7 +1258,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Face Pull', 'Reverse Pec Deck', 'Cable Reverse Fly'],
         ['سحب الوجه', 'فتح الصدر العكسي', 'فتح الكابل العكسي'],
-        '/assets/day5/Rear Delt Fly.png'
+        '/assets/gym/day5/Rear Delt Fly.png'
       ),
       createExercise(
         21,
@@ -1318,7 +1318,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Rear Delt Fly', 'Reverse Pec Deck', 'Band Pull-Apart'],
         ['فتح الأكتاف الخلفية', 'فتح الصدر العكسي', 'فتح الشريط'],
-        '/assets/day5/Face Pull.png'
+        '/assets/gym/day5/Face Pull.png'
       ),
       createExercise(
         22,
@@ -1376,7 +1376,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Dumbbell Shrugs', 'Barbell Shrugs', 'Cable Shrugs'],
         ['رفع الكتفين بالدمبل', 'رفع الكتفين بالباربل', 'رفع الكتفين بالكابل'],
-        '/assets/day5/EZ Bar Shrugs.png'
+        '/assets/gym/day5/EZ Bar Shrugs.png'
       )
     ]
   },
@@ -1442,7 +1442,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Stiff-Leg Deadlift', 'Good Morning', 'Cable Pull-Through'],
         ['الرفعة الميتة بالأرجل المستقيمة', 'صباح الخير', 'السحب بالكابل'],
-        '/assets/day6/Romanian Deadlift.png'
+        '/assets/gym/day6/Romanian Deadlift.png'
       ),
       createExercise(
         24,
@@ -1500,7 +1500,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Seated Leg Curl', 'Nordic Curl', 'Stability Ball Curl'],
         ['لف الساق جالساً', 'اللف النوردي', 'لف الكرة الثابتة'],
-        '/assets/day6/Lying Leg Curl.png'
+        '/assets/gym/day6/Lying Leg Curl.png'
       ),
       createExercise(
         25,
@@ -1558,7 +1558,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Lunges', 'Step-Ups', 'Single-Leg Leg Press'],
         ['طعن', 'صعود الدرج', 'ضغط الأرجل أحادي الرجل'],
-        '/assets/day6/Bulgarian Split Squat.png'
+        '/assets/gym/day6/Bulgarian Split Squat.png'
       ),
       createExercise(
         26,
@@ -1616,7 +1616,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Glute Bridge', 'Romanian Deadlift', 'Cable Pull-Through'],
         ['جسر الأرداف', 'الرفعة الميتة الرومانية', 'السحب بالكابل'],
-        '/assets/day6/Hip Thrust.png'
+        '/assets/gym/day6/Hip Thrust.png'
       ),
       createExercise(
         27,
@@ -1676,7 +1676,7 @@ export const WORKOUT_DAYS: WorkoutDay[] = [
         ],
         ['Standing Calf Raise', 'Donkey Calf Raise', 'Tibialis Raise'],
         ['رفع الساق واقفاً', 'رفع الساق بالحمار', 'رفع قصبة الساق'],
-        '/assets/day6/Seated Calf Raise.png'
+        '/assets/gym/day6/Seated Calf Raise.png'
       )
     ]
   },
