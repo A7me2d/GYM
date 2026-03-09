@@ -23,7 +23,8 @@ const createHomeExercise = (
   alternatives: string[],
   alternativesAr: string[],
   isDurationBased: boolean = false,
-  duration?: number
+  duration?: number,
+  imageUrl?: string
 ): HomeExercise => ({
   id,
   name,
@@ -38,7 +39,7 @@ const createHomeExercise = (
   difficulty,
   equipment: 'Bodyweight',
   equipmentAr: 'وزن الجسم',
-  imageUrl: `https://images.unsplash.com/photo-1571019614242-c5c8d8d8d8d8?w=400&h=300&fit=crop&query=${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`,
+  imageUrl: imageUrl || `https://images.unsplash.com/photo-1571019614242-c5c8d8d8d8d8?w=400&h=300&fit=crop&query=${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`,
   description,
   descriptionAr,
   instructions,
@@ -138,7 +139,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'سخن معصميك قبل البدء'
         ],
         ['Incline Push Ups', 'Diamond Push Ups', 'Wide Push Ups'],
-        ['ضغط مائل', 'ضغط الماس', 'ضغط واسع']
+        ['ضغط مائل', 'ضغط الماس', 'ضغط واسع'],
+        false,
+        undefined,
+        '/assets/home/day1/Push Ups.png'
       ),
       createHomeExercise(
         102,
@@ -189,7 +193,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'حافظ على شد عضلات البطن'
         ],
         ['Standard Push Ups', 'Incline Push Ups', 'Plyometric Push Ups'],
-        ['ضغط عادي', 'ضغط مائل', 'ضغط القفز']
+        ['ضغط عادي', 'ضغط مائل', 'ضغط القفز'],
+        false,
+        undefined,
+        '/assets/home/day1/Wide Push Ups.png'
       ),
       createHomeExercise(
         103,
@@ -240,7 +247,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'استخدم سطحاً مستقراً لقدميك'
         ],
         ['Standard Push Ups', 'Incline Push Ups', 'Pike Push Ups'],
-        ['ضغط عادي', 'ضغط مائل', 'ضغط بايك']
+        ['ضغط عادي', 'ضغط مائل', 'ضغط بايك'],
+        false,
+        undefined,
+        '/assets/home/day1/Decline Push Ups.png'
       ),
       createHomeExercise(
         104,
@@ -293,7 +303,8 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
         ['Side Plank', 'High Plank', 'Plank Jacks'],
         ['بلانك جانبي', 'بلانك عالي', 'بلانك جاك'],
         true,
-        45
+        45,
+        '/assets/home/day1/Plank.png'
       ),
       createHomeExercise(
         105,
@@ -344,7 +355,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'تنفس بإيقاع مع الحركة'
         ],
         ['Slow Mountain Climbers', 'Cross-Body Mountain Climbers', 'Plank Jacks'],
-        ['تسلق جبال بطيء', 'تسلق جبال متقاطع', 'بلانك جاك']
+        ['تسلق جبال بطيء', 'تسلق جبال متقاطع', 'بلانك جاك'],
+        false,
+        undefined,
+        '/assets/home/day1/Mountain Climbers.png'
       )
     ]
   },
@@ -410,7 +424,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'سخن كاحليك ووركك أولاً'
         ],
         ['Jump Squats', 'Sumo Squats', 'Pistol Squat Progression'],
-        ['سكوات القفز', 'سكوات سومو', 'تقدم سكوات المسدس']
+        ['سكوات القفز', 'سكوات سومو', 'تقدم سكوات المسدس'],
+        false,
+        undefined,
+        '/assets/home/day2/Bodyweight Squats.png'
       ),
       createHomeExercise(
         202,
@@ -461,7 +478,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'حافظ على شد عضلات البطن طوال الوقت'
         ],
         ['Bodyweight Squats', 'Pop Squats', 'Squat Pulses'],
-        ['سكوات عادي', 'سكوات البوب', 'سكوات النبض']
+        ['سكوات عادي', 'سكوات البوب', 'سكوات النبض'],
+         false,
+        undefined,
+        '/assets/home/day2/Jump Squats.png'
       ),
       createHomeExercise(
         203,
@@ -512,7 +532,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'ركز على الدفع من خلال كعبك الأمامي'
         ],
         ['Reverse Lunges', 'Walking Lunges', 'Jump Lunges'],
-        ['طعنات خلفية', 'طعنات المشي', 'طعنات القفز']
+        ['طعنات خلفية', 'طعنات المشي', 'طعنات القفز'],
+        false,
+        undefined,
+        '/assets/home/day2/Lunges.png'
       ),
       createHomeExercise(
         204,
@@ -565,7 +588,8 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
         ['Bodyweight Squats', 'Split Squats', 'Bulgarian Split Squats'],
         ['سكوات عادي', 'سكوات منقسمة', 'سكوات بلغارية منقسمة'],
         true,
-        45
+        45,
+        '/assets/home/day2/Wall Sit.png'
       ),
       createHomeExercise(
         205,
@@ -616,7 +640,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'مط عضلات بطن الساق بين المجموعات'
         ],
         ['Single-Leg Calf Raises', 'Seated Calf Raises', 'Jump Rope'],
-        ['رفع بطن الساق ساق واحدة', 'رفع بطن الساق جلوس', 'القفز بالحبل']
+        ['رفع بطن الساق ساق واحدة', 'رفع بطن الساق جلوس', 'القفز بالحبل'],
+        false,
+        undefined,
+        '/assets/home/day2/Calf Raises.png'
       )
     ]
   },
@@ -690,7 +717,8 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
         ['Swimmers', 'Bird Dog', 'Back Extensions'],
         ['السباحون', 'بيرد دوج', 'تمديدات الظهر'],
         true,
-        30
+        30,
+        '/assets/home/day4/Superman Hold.png'
       ),
       createHomeExercise(
         402,
@@ -742,7 +770,9 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
         ],
         ['Prone Y-W-T Raises', 'Face Pulls', 'Band Pull-Aparts'],
         ['رفعات Y-W-T على البطن', 'فيس بول', 'سحب الشريط'],
-        false
+        false,
+        undefined,
+        '/assets/home/day4/Reverse Snow Angels.png'
       ),
       createHomeExercise(
         403,
@@ -793,7 +823,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'سخن معصميك قبل البدء'
         ],
         ['Standard Push Ups', 'Close Grip Push Ups', 'Tricep Dips'],
-        ['ضغط عادي', 'ضغط قبضة ضيقة', 'غطط الترايسيبس']
+        ['ضغط عادي', 'ضغط قبضة ضيقة', 'غطط الترايسيبس'],
+        false,
+        undefined,
+        '/assets/home/day4/Diamond Push Ups.png'
       ),
       createHomeExercise(
         404,
@@ -844,7 +877,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'حافظ على شد عضلات البطن'
         ],
         ['High Plank', 'Plank Up-Downs', 'Plank Jacks'],
-        ['بلانك عالي', 'صعود ونزول البلانك', 'بلانك جاك']
+        ['بلانك عالي', 'صعود ونزول البلانك', 'بلانك جاك'],
+        false,
+        undefined,
+        '/assets/home/day4/Plank Shoulder Taps.png'
       ),
       createHomeExercise(
         405,
@@ -895,7 +931,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'تحكم في الحركة طوال الوقت'
         ],
         ['Door Frame Rows', 'Towel Rows', 'Resistance Band Rows'],
-        ['سحب إطار الباب', 'سحب المنشفة', 'سحب شريط المقاومة']
+        ['سحب إطار الباب', 'سحب المنشفة', 'سحب شريط المقاومة'],
+        false,
+        undefined,
+        '/assets/home/day4/Table Rows.png'
       )
     ]
   },
@@ -957,7 +996,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'الهبط بنعومة عند القفز'
         ],
         ['Half Burpees', 'Squat Thrusts', 'Burpee to Pull-Up'],
-        ['نصف بيربي', 'دفعة السكوات', 'بيربي للسحب']
+        ['نصف بيربي', 'دفعة السكوات', 'بيربي للسحب'],
+        false,
+        undefined,
+        '/assets/home/day5/Burpees.png'
       ),
       createHomeExercise(
         502,
@@ -1008,7 +1050,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'تنفس بإيقاع'
         ],
         ['Star Jumps', 'Seal Jacks', 'Cross Jacks'],
-        ['قفز النجمة', 'جاك الفقمة', 'جاك متقاطع']
+        ['قفز النجمة', 'جاك الفقمة', 'جاك متقاطع'],
+        false,
+        undefined,
+        '/assets/home/day5/Jumping Jacks.png'
       ),
       createHomeExercise(
         503,
@@ -1059,7 +1104,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'حافظ على قامة منتصبة'
         ],
         ['Butt Kicks', 'A-Skips', 'Mountain Climbers'],
-        ['رفع الكعبين', 'سكيبس', 'تسلق الجبال']
+        ['رفع الكعبين', 'سكيبس', 'تسلق الجبال'],
+        false,
+        undefined,
+        '/assets/home/day5/High Knees.png'
       ),
       createHomeExercise(
         504,
@@ -1110,7 +1158,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'تنفس بثبات'
         ],
         ['Burpees', 'Thrusters', 'Man Makers'],
-        ['بيربي', 'ثراسترز', 'مان ميكرز']
+        ['بيربي', 'ثراسترز', 'مان ميكرز'],
+        false,
+        undefined,
+        '/assets/home/day5/Squat to Push Up.png'
       ),
       createHomeExercise(
         505,
@@ -1163,7 +1214,8 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
         ['Side Plank', 'High Plank', 'Plank Jacks'],
         ['بلانك جانبي', 'بلانك عالي', 'بلانك جاك'],
         true,
-        60
+        60,
+        '/assets/home/day5/Plank.png'
       )
     ]
   },
@@ -1225,7 +1277,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'اثنِ ركبتيك قليلاً إذا لزم الأمر'
         ],
         ['Hanging Leg Raises', 'Reverse Crunches', 'Flutter Kicks'],
-        ['رفع الأرجل المعلقة', 'تقلصات عكسية', 'رفس الأرجل']
+        ['رفع الأرجل المعلقة', 'تقلصات عكسية', 'رفس الأرجل'],
+        false,
+        undefined,
+        '/assets/home/day6/Leg Raises.png'
       ),
       createHomeExercise(
         602,
@@ -1276,7 +1331,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'حافظ على ظهرك مستقيماً'
         ],
         ['Bicycle Crunches', 'Side Planks', 'Wood Chops'],
-        ['تقلصات الدراجة', 'بلانك جانبي', 'تقطيع الخشب']
+        ['تقلصات الدراجة', 'بلانك جانبي', 'تقطيع الخشب'],
+        false,
+        undefined,
+        '/assets/home/day6/Russian Twists.png'
       ),
       createHomeExercise(
         603,
@@ -1327,7 +1385,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'تنفس بثبات'
         ],
         ['Scissor Kicks', 'Leg Raises', 'Dead Bug'],
-        ['مقص الأرجل', 'رفع الأرجل', 'الحشرة الميتة']
+        ['مقص الأرجل', 'رفع الأرجل', 'الحشرة الميتة'],
+        false,
+        undefined,
+        '/assets/home/day6/Flutter Kicks.png'
       ),
       createHomeExercise(
         604,
@@ -1378,7 +1439,10 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
           'تنفس بثبات'
         ],
         ['Crunches', 'Russian Twists', 'Dead Bug'],
-        ['تقلصات', 'اللف الروسي', 'الحشرة الميتة']
+        ['تقلصات', 'اللف الروسي', 'الحشرة الميتة'],
+        false,
+        undefined,
+        '/assets/home/day6/Bicycle Crunch.png'
       ),
       createHomeExercise(
         605,
@@ -1431,7 +1495,8 @@ export const HOME_WORKOUT_DAYS: HomeWorkoutDay[] = [
         ['Standard Plank', 'Side Plank', 'Plank Up-Downs'],
         ['بلانك عادي', 'بلانك جانبي', 'صعود ونزول البلانك'],
         true,
-        45
+        45,
+        '/assets/home/day6/Plank Variations.png'
       )
     ]
   },

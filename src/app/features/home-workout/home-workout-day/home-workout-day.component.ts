@@ -155,7 +155,7 @@ import { HomeWorkoutDay, HomeExercise, HomeExerciseLog } from '../../../core/mod
               }
 
               <!-- Exercise List -->
-              <div class="space-y-5">
+              <div class="grid grid-cols-1 gap-4">
                 @for (exercise of workoutDay()?.exercises; track exercise.id; let i = $index) {
                   <app-home-exercise-card
                     [exercise]="exercise"

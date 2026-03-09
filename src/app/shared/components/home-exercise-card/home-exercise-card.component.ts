@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HomeExercise } from '../../../core/models/home-workout.model';
 import { TranslationService } from '../../../core/services/translation.service';
+import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-home-exercise-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ImageViewerComponent],
   template: `
     <div class="card group hover:border-primary-500/50 transition-all duration-300">
       <div class="p-5">
@@ -15,7 +16,10 @@ import { TranslationService } from '../../../core/services/translation.service';
         <div class="flex gap-4 mb-4">
           <!-- Exercise Image -->
           <div class="relative flex-shrink-0">
-            <div class="w-20 h-20 rounded-xl overflow-hidden bg-dark-700">
+            <div 
+              class="w-20 h-20 rounded-xl overflow-hidden bg-dark-700 cursor-pointer"
+              (click)="showImagePreview.set(true)"
+            >
               <img 
                 [src]="exercise().imageUrl" 
                 [alt]="getName()"
@@ -70,6 +74,13 @@ import { TranslationService } from '../../../core/services/translation.service';
             </div>
           </div>
         </div>
+
+        <!-- Image Viewer Modal -->
+        <app-image-viewer
+          [imageUrl]="exercise().imageUrl"
+          [imageAlt]="getName()"
+          [(isOpen)]="showImagePreview"
+        />
 
         <!-- Duration Timer (for duration-based exercises when active) -->
         @if (showTimer() && exercise().isDurationBased) {
@@ -147,6 +158,7 @@ export class HomeExerciseCardComponent {
   
   timerSeconds = signal(0);
   timerRunning = signal(false);
+  showImagePreview = signal(false);
   private timerInterval: ReturnType<typeof setInterval> | null = null;
 
   t(key: string): string {
