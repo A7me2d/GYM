@@ -20,8 +20,17 @@ export class HomeWorkoutService {
   // Computed values
   readonly todayWorkout = computed(() => {
     const dayOfWeek = new Date().getDay();
-    // Convert Sunday (0) to day 7, otherwise use day number
-    const dayId = dayOfWeek === 0 ? 7 : dayOfWeek;
+    // Map days: Saturday(6)=Day1, Sunday(0)=Day2, Monday(1)=Day3, Tuesday(2)=Day4, Wednesday(3)=Day5, Thursday(4)=Day6, Friday(5)=Day7
+    const dayMap: { [key: number]: number } = {
+      6: 1,  // Saturday → Day 1
+      0: 2,  // Sunday → Day 2
+      1: 3,  // Monday → Day 3
+      2: 4,  // Tuesday → Day 4
+      3: 5,  // Wednesday → Day 5
+      4: 6,  // Thursday → Day 6
+      5: 7   // Friday → Day 7
+    };
+    const dayId = dayMap[dayOfWeek];
     return this.getWorkoutDay(dayId);
   });
   

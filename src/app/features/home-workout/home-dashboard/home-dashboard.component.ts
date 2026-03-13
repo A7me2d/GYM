@@ -129,7 +129,7 @@ import { HomeDayCardComponent } from './home-day-card.component';
                 <h2 class="text-xl font-bold text-white">{{ t('homeWorkout.weeklyProgram') }}</h2>
               </div>
               
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch">
                 @for (day of workoutDays(); track day.id) {
                   <app-home-day-card
                     [day]="day"

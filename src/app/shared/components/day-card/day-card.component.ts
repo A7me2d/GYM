@@ -9,7 +9,7 @@ import { TranslationService } from '../../../core/services/translation.service';
   imports: [RouterLink],
   template: `
     <div 
-      class="card card-hover p-5 md:p-6 group relative overflow-hidden"
+      class="card card-hover p-5 md:p-6 group relative overflow-hidden h-full flex flex-col"
       [class.glow]="isToday() && !isCompleted()"
       [class.border-green-500/50]="isCompleted()"
       [class.border-primary-500/50]="isToday() && !isCompleted()"
@@ -30,7 +30,7 @@ import { TranslationService } from '../../../core/services/translation.service';
         </div>
       }
 
-      <div class="relative">
+      <div class="relative flex-1 flex flex-col">
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
@@ -91,7 +91,7 @@ import { TranslationService } from '../../../core/services/translation.service';
           <!-- Action button -->
           <a 
             [routerLink]="['/workout/day', day().id]" 
-            class="btn w-full justify-center text-sm font-bold"
+            class="btn w-full justify-center text-sm font-bold mt-auto"
             [class.btn-success]="isCompleted()"
             [class.btn-primary]="!isCompleted()"
           >

@@ -321,6 +321,22 @@ export const TRANSLATIONS: Translations = {
     en: 'Rest',
     ar: 'راحة'
   },
+  'workoutDay.getReady': {
+    en: 'Get Ready!',
+    ar: 'استعد!'
+  },
+  'workoutDay.count': {
+    en: 'Count',
+    ar: 'العد'
+  },
+  'workoutDay.stop': {
+    en: 'Stop',
+    ar: 'توقف'
+  },
+  'workoutDay.startCounting': {
+    en: 'Start Counting',
+    ar: 'ابدأ العد'
+  },
 
   'workoutDay.notFoundTitle': {
     en: 'Workout Not Found',

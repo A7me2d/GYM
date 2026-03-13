@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HomeExercise } from '../../../core/models/home-workout.model';
 import { TranslationService } from '../../../core/services/translation.service';
+import { AudioService } from '../../../core/services/audio.service';
 import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
 
 @Component({
@@ -119,6 +120,46 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
           </div>
         }
 
+        <!-- Counting Section -->
+        @if (showInputs() && !exercise().isDurationBased) {
+          @if (isCounting()) {
+            <div class="mb-4 p-4 rounded-xl bg-gradient-to-r from-primary-500/10 to-accent-500/10 border border-primary-500/30">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  @if (countDown() > 0) {
+                    <div class="text-center">
+                      <p class="text-sm text-dark-400 mb-1">{{ t('workoutDay.getReady') }}</p>
+                      <span class="text-4xl font-black text-primary-400 animate-pulse">{{ countDown() }}</span>
+                    </div>
+                  } @else {
+                    <div class="text-center">
+                      <p class="text-sm text-dark-400 mb-1">{{ t('workoutDay.count') }}</p>
+                      <span class="text-4xl font-black text-accent-400">{{ currentCount() }}/{{ targetCount() }}</span>
+                    </div>
+                  }
+                </div>
+                <button class="btn btn-danger text-sm" (click)="onStopCounting()">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="6" y="6" width="12" height="12"/>
+                  </svg>
+                  {{ t('workoutDay.stop') }}
+                </button>
+              </div>
+            </div>
+          } @else {
+            <button 
+              class="w-full btn btn-secondary text-sm mb-4"
+              (click)="onStartCounting()">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+              {{ t('workoutDay.startCounting') }} ({{ exercise().reps }} {{ t('exerciseCard.reps') }})
+            </button>
+          }
+        }
+
         <!-- Completion Toggle -->
         @if (showInputs()) {
           <button 
@@ -150,11 +191,20 @@ export class HomeExerciseCardComponent {
   isCompleted = input(false);
   showInputs = input(false);
   showTimer = input(false);
-  
+
+  // Counting inputs
+  isCounting = input(false);
+  countDown = input(0);
+  currentCount = input(0);
+  targetCount = input(0);
+
   completeChange = output<{ exerciseId: number; completed: boolean }>();
   timerComplete = output<number>();
+  startCounting = output<{ exerciseId: number; target: number }>();
+  stopCounting = output<void>();
 
   private translationService = inject(TranslationService);
+  private audioService = inject(AudioService);
   
   timerSeconds = signal(0);
   timerRunning = signal(false);
@@ -248,6 +298,27 @@ export class HomeExerciseCardComponent {
       exerciseId: this.exercise().id,
       completed: !this.isCompleted()
     });
+  }
+
+  onStartCounting(): void {
+    const target = this.parseReps(this.exercise().reps);
+    this.startCounting.emit({
+      exerciseId: this.exercise().id,
+      target: target
+    });
+  }
+
+  onStopCounting(): void {
+    this.stopCounting.emit();
+  }
+
+  parseReps(reps: string): number {
+    // Handle reps like "10-12" by taking the higher number
+    if (reps.includes('-')) {
+      const parts = reps.split('-');
+      return parseInt(parts[parts.length - 1]) || 10;
+    }
+    return parseInt(reps) || 10;
   }
 
   onImageError(event: Event): void {

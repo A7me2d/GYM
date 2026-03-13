@@ -9,8 +9,8 @@ import { TranslationService } from '../../../core/services/translation.service';
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <div class="card group hover:border-green-500/50 transition-all duration-300 cursor-pointer">
-      <a [routerLink]="['/home-workout/day', day().id]" class="block p-5">
+    <div class="card group hover:border-green-500/50 transition-all duration-300 cursor-pointer h-full flex flex-col relative">
+      <a [routerLink]="['/home-workout/day', day().id]" class="block p-5 flex-1 flex flex-col">
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
@@ -67,7 +67,7 @@ import { TranslationService } from '../../../core/services/translation.service';
           </div>
 
           <!-- Action button -->
-          <div class="btn w-full justify-center text-sm font-bold"
+          <div class="btn w-full justify-center text-sm font-bold mt-auto"
                [class.btn-success]="isCompleted()"
                [class.btn-primary]="!isCompleted()">
             @if (isCompleted()) {

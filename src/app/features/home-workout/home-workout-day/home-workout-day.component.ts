@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HomeWorkoutService } from '../../../core/services/home-workout.service';
 import { TranslationService } from '../../../core/services/translation.service';
 import { TimerService } from '../../../core/services/timer.service';
+import { AudioService } from '../../../core/services/audio.service';
 import { HomeExerciseCardComponent } from '../../../shared/components/home-exercise-card/home-exercise-card.component';
 import { TimerComponent } from '../../../shared/components/timer/timer.component';
 import { HomeWorkoutDay, HomeExercise, HomeExerciseLog } from '../../../core/models/home-workout.model';
@@ -162,7 +163,13 @@ import { HomeWorkoutDay, HomeExercise, HomeExerciseLog } from '../../../core/mod
                     [showInputs]="workoutStarted()"
                     [showTimer]="workoutStarted() && exercise.isDurationBased"
                     [isCompleted]="isExerciseCompleted(exercise.id)"
+                    [isCounting]="isExerciseCounting(exercise.id)"
+                    [countDown]="countDown()"
+                    [currentCount]="currentCount()"
+                    [targetCount]="targetCount()"
                     (completeChange)="onExerciseComplete($event.exerciseId, $event.completed)"
+                    (startCounting)="startCounting($event.exerciseId, $event.target)"
+                    (stopCounting)="stopCounting()"
                   />
                 }
               </div>
@@ -217,6 +224,7 @@ export class HomeWorkoutDayComponent implements OnInit {
   private homeWorkoutService = inject(HomeWorkoutService);
   private timerService = inject(TimerService);
   private translationService = inject(TranslationService);
+  private audioService = inject(AudioService);
 
   workoutDay = signal<HomeWorkoutDay | undefined>(undefined);
   workoutStarted = signal(false);
@@ -224,6 +232,13 @@ export class HomeWorkoutDayComponent implements OnInit {
   currentExercise = signal<HomeExercise | undefined>(undefined);
   currentRestTime = signal(60);
   exerciseLogs = signal<Map<number, HomeExerciseLog>>(new Map());
+
+  // Counting state
+  isCounting = signal(false);
+  countDown = signal(0); // 3, 2, 1 countdown before counting starts
+  currentCount = signal(0);
+  targetCount = signal(10); // default count target
+  countingExerciseId = signal<number | null>(null);
 
   Math = Math;
 
@@ -363,5 +378,104 @@ export class HomeWorkoutDayComponent implements OnInit {
       return parseInt(rest.replace('sec', ''));
     }
     return 60;
+  }
+
+  parseReps(reps: string): number {
+    // Handle reps like "10-12" by taking the higher number
+    if (reps.includes('-')) {
+      const parts = reps.split('-');
+      return parseInt(parts[parts.length - 1]) || 10;
+    }
+    return parseInt(reps) || 10;
+  }
+
+  // ==================== COUNTING METHODS ====================
+
+  /**
+   * Start counting with 3 second delay
+   * @param exerciseId - The exercise to count for
+   * @param target - The target count (e.g., reps count)
+   */
+  startCounting(exerciseId: number, target: number): void {
+    this.countingExerciseId.set(exerciseId);
+    this.targetCount.set(target);
+    this.currentCount.set(0);
+    this.countDown.set(3);
+    this.isCounting.set(true);
+
+    // Start 3 second countdown
+    this.audioService.speakReady();
+    this.startCountdown();
+  }
+
+  private countdownInterval: ReturnType<typeof setInterval> | null = null;
+  private countingInterval: ReturnType<typeof setInterval> | null = null;
+
+  private startCountdown(): void {
+    this.countdownInterval = setInterval(() => {
+      const current = this.countDown();
+      if (current > 1) {
+        this.countDown.set(current - 1);
+        this.audioService.speakNumber(current - 1);
+      } else {
+        if (this.countdownInterval) {
+          clearInterval(this.countdownInterval);
+          this.countdownInterval = null;
+        }
+        this.countDown.set(0);
+        // Start the actual counting
+        this.executeCounting();
+      }
+    }, 1000);
+  }
+
+  private executeCounting(): void {
+    const target = this.targetCount();
+    let count = 0;
+
+    const countStep = async () => {
+      count++;
+      this.currentCount.set(count);
+      await this.audioService.speakNumber(count);
+
+      if (count >= target) {
+        // Wait a moment then speak complete
+        await this.audioService.speakComplete();
+        this.isCounting.set(false);
+        this.countingExerciseId.set(null);
+      } else {
+        // Continue counting after audio finishes
+        this.countingInterval = setTimeout(countStep, 500);
+      }
+    };
+
+    // Start counting
+    countStep();
+  }
+
+  /**
+   * Stop counting
+   */
+  stopCounting(): void {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
+    }
+    if (this.countingInterval) {
+      clearTimeout(this.countingInterval as unknown as number);
+      this.countingInterval = null;
+    }
+    this.isCounting.set(false);
+    this.countDown.set(0);
+    this.currentCount.set(0);
+    this.countingExerciseId.set(null);
+    this.audioService.stop();
+  }
+
+  /**
+   * Check if an exercise is currently being counted
+   */
+  isExerciseCounting(exerciseId: number): boolean {
+    return this.countingExerciseId() === exerciseId;
   }
 }
